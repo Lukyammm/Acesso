@@ -168,6 +168,21 @@ function getDriveFolderContents(folderId) {
   }
 }
 
+
+function normalizeItemType(type) {
+  const raw = String(type || '').trim().toLowerCase();
+  if (['link', 'sheet', 'folder'].includes(raw)) {
+    return raw;
+  }
+
+  // Compatibilidade com configurações antigas que usavam "form" para links de Formulários.
+  if (['form', 'forms', 'formulario', 'formulário'].includes(raw)) {
+    return 'link';
+  }
+
+  return raw;
+}
+
 function sanitizeConfig(configObj) {
   const base = configObj || {};
   const categories = Array.isArray(base.categories) ? base.categories : [];
@@ -192,7 +207,7 @@ function sanitizeConfig(configObj) {
               return {
                 name: String(item.name || '').trim(),
                 desc: String(item.desc || '').trim(),
-                type: String(item.type || 'link').trim(),
+                type: normalizeItemType(item.type || 'link'),
                 url: String(item.url || '').trim(),
                 folderId: String(item.folderId || '').trim(),
               };
