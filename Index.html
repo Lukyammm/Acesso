@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Institucional</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --primary: #1e40af;
+      --primary-dark: #1e3a8a;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --light: #f8fafc;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { 
+      font-family: 'Inter', system-ui, sans-serif; 
+      background: #f1f5f9; 
+      color: #1e2937; 
+    }
+
+    /* TOPBAR */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; height: 72px;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #e2e8f0;
+      display: flex; align-items: center; padding: 0 32px; z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+    .logo { font-size: 1.65rem; font-weight: 700; color: var(--primary); letter-spacing: -0.6px; }
+    .tabs { display: flex; gap: 8px; margin-left: 52px; }
+    .tab {
+      padding: 10px 26px; border-radius: 9999px; font-weight: 600; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tab.active { background: var(--primary); color: white; box-shadow: 0 6px 16px rgba(30,64,175,0.3); }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed; left: 0; top: 72px; bottom: 0; width: 292px;
+      background: var(--dark); color: #cbd5e1; padding: 28px 0; overflow-y: auto;
+      box-shadow: 6px 0 25px rgba(0,0,0,0.12);
+    }
+    .sidebar-header { padding: 0 28px 18px; color: #94a3b8; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.8px; }
+    .sidebar-item {
+      padding: 15px 28px; display: flex; align-items: center; gap: 14px;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar-item:hover, .sidebar-item.active {
+      background: #1e2937; color: white; transform: translateX(6px);
+    }
+
+    /* MAIN */
+    .main { margin-left: 292px; padding: 92px 48px 48px; min-height: 100vh; }
+
+    /* ACCORDION PREMIUM */
+    .accordion {
+      background: white; border-radius: 20px; overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 20px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .accordion:hover { box-shadow: 0 15px 35px rgba(0,0,0,0.12); }
+
+    .accordion summary {
+      padding: 24px 32px; font-weight: 600; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; gap: 18px;
+      background: #f8fafc; list-style: none; user-select: none;
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary i:first-child { font-size: 1.65rem; color: var(--primary); width: 32px; }
+    
+    .chevron {
+      margin-left: auto; font-size: 1.45rem; color: #94a3b8;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .accordion[open] .chevron { transform: rotate(180deg); color: var(--primary); }
+
+    .items-container { padding: 12px 28px 32px; }
+
+    .item {
+      display: flex; align-items: center; gap: 20px;
+      padding: 20px 26px; border-radius: 14px; margin-bottom: 10px;
+      border: 1px solid #e2e8f0; background: white;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .item:hover {
+      transform: translateY(-4px); border-color: #cbd5e1;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+    .item i { font-size: 1.75rem; color: #64748b; width: 38px; }
+
+    .btn {
+      padding: 11px 26px; border: none; border-radius: 12px;
+      font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-primary {
+      background: var(--primary); color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark); transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(30,64,175,0.4);
+    }
+
+    /* MODAL */
+    .modal {
+      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.8);
+      align-items: center; justify-content: center; z-index: 3000;
+      backdrop-filter: blur(12px);
+    }
+    .modal-content {
+      background: white; border-radius: 24px; width: 90%; max-width: 680px;
+      max-height: 88vh; overflow: hidden; box-shadow: 0 35px 70px rgba(0,0,0,0.3);
+      animation: popUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popUp { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .modal-header {
+      padding: 24px 32px; border-bottom: 1px solid #e2e8f0;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #f8fafc;
+    }
+    .close-btn {
+      width: 44px; height: 44px; border: none; background: none;
+      font-size: 30px; color: #64748b; cursor: pointer; border-radius: 50%;
+    }
+    .close-btn:hover { background: #fee2e2; color: #ef4444; }
+
+    .modal-body {
+      padding: 32px; max-height: 65vh; overflow-y: auto;
+    }
+    .modal-body a {
+      display: block; padding: 18px 22px; margin: 8px 0;
+      border: 1px solid #e2e8f0; border-radius: 14px;
+      text-decoration: none; color: inherit; transition: all 0.3s ease;
+    }
+    .modal-body a:hover {
+      border-color: var(--primary); background: #f0f9ff; transform: translateX(8px);
+    }
+
+    textarea {
+      width: 100%; height: 70vh; font-family: ui-monospace, monospace;
+      font-size: 14.5px; padding: 28px; border: 1px solid #cbd5e1;
+      border-radius: 20px; resize: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">PORTAL INSTITUCIONAL</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(0)">Dashboard</div>
+      <div class="tab" onclick="enterAdmin()">Administração</div>
+    </div>
+    <div class="user ml-auto" id="user">Carregando...</div>
+  </div>
+
+  <div class="sidebar" id="sidebar"></div>
+
+  <div class="main" id="dashboardView">
+    <h1 id="categoryTitle" class="text-3xl font-semibold mb-10"></h1>
+    <div id="dashboardContent"></div>
+  </div>
+
+  <div class="main admin-panel hidden" id="adminView">
+    <h1 class="text-3xl font-semibold mb-3">Administração do Portal</h1>
+    <p class="text-slate-500 mb-8">Edite o JSON completo abaixo.</p>
+    <textarea id="configTextarea"></textarea>
+    <div class="mt-8 flex gap-4">
+      <button class="btn btn-primary" onclick="saveAdminConfig()">💾 Salvar Configuração</button>
+      <button class="btn" style="background:#64748b;color:white;" onclick="loadConfigToTextarea()">🔄 Recarregar</button>
+      <button class="btn btn-danger" onclick="restoreDefault()">⚠️ Restaurar Padrão</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle" class="text-xl font-semibold"></h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentConfig = {};
+    let currentCategoryId = null;
+    const ADMIN_PASSWORD = "admin123";
+
+    function switchTab(n) {
+      document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===n));
+      document.getElementById('dashboardView').style.display = n===0 ? 'block' : 'none';
+      document.getElementById('adminView').classList.toggle('hidden', n!==1);
+    }
+
+    function enterAdmin() {
+      const pass = prompt("🔐 Digite a senha de administrador:");
+      if (pass !== ADMIN_PASSWORD) return alert("Senha incorreta.");
+      switchTab(1);
+      loadConfigToTextarea();
+    }
+
+    function loadConfigToTextarea() {
+      google.script.run.withSuccessHandler(config => {
+        document.getElementById('configTextarea').value = JSON.stringify(config, null, 2);
+      }).getConfig();
+    }
+
+    function saveAdminConfig() {
+      const json = document.getElementById('configTextarea').value;
+      google.script.run.withSuccessHandler(res => {
+        alert(res.message);
+        if (res.success) loadDashboard();
+      }).saveConfig(json);
+    }
+
+    function restoreDefault() {
+      if (!confirm("Restaurar padrão? Todos os dados serão apagados.")) return;
+      google.script.run.withSuccessHandler(res => {
+        alert(res.message);
+        loadConfigToTextarea();
+        loadDashboard();
+      }).resetToDefault();
+    }
+
+    function loadDashboard() {
+      google.script.run.withSuccessHandler(config => {
+        currentConfig = config;
+        renderSidebar();
+        if (currentConfig.categories?.length) loadCategory(currentConfig.categories[0].id);
+      }).getConfig();
+    }
+
+    function renderSidebar() {
+      const sb = document.getElementById('sidebar');
+      sb.innerHTML = '<div class="sidebar-header">CATEGORIAS</div>';
+      currentConfig.categories.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = 'sidebar-item';
+        div.innerHTML = `<i class="fas ${cat.icon}"></i><span>${cat.name}</span>`;
+        div.onclick = () => loadCategory(cat.id);
+        sb.appendChild(div);
+      });
+    }
+
+    function loadCategory(catId) {
+      currentCategoryId = catId;
+      const cat = currentConfig.categories.find(c => c.id === catId);
+      if (!cat) return;
+
+      document.getElementById('categoryTitle').innerHTML = `<span style="color:${cat.color}">${cat.name}</span>`;
+
+      let html = '';
+      cat.subtopics.forEach(sub => {
+        html += `
+          <details class="accordion">
+            <summary>
+              <i class="fas ${sub.icon}"></i>
+              <span>${sub.title}</span>
+              <i class="fas fa-chevron-down chevron"></i>
+            </summary>
+            <div class="items-container">`;
+
+        if (!sub.items || sub.items.length === 0) {
+          html += `<p style="padding:50px;text-align:center;color:#94a3b8;">Nenhum item ainda.</p>`;
+        } else {
+          sub.items.forEach(item => {
+            const icon = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'fa-link';
+            html += `
+              <div class="item">
+                <i class="fas ${icon}"></i>
+                <div style="flex:1;">
+                  <div style="font-weight:600;">${item.name}</div>
+                  ${item.desc ? `<div style="font-size:0.92rem;color:#64748b;margin-top:3px;">${item.desc}</div>` : ''}
+                </div>
+                ${item.type === 'folder' ? 
+                  `<button class="btn btn-primary" onclick="openFolder('${item.folderId}','${item.name}')">Ver Pasta</button>` :
+                  `<button class="btn btn-primary" onclick="window.open('${item.url}','_blank')">Abrir</button>`
+                }
+              </div>`;
+          });
+        }
+        html += `</div></details>`;
+      });
+      document.getElementById('dashboardContent').innerHTML = html;
+    }
+
+    function openFolder(folderId, title) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = '<p style="text-align:center;padding:80px;color:#64748b;">Carregando...</p>';
+      document.getElementById('modal').style.display = 'flex';
+
+      google.script.run
+        .withSuccessHandler(items => {
+          let list = '';
+          items.forEach(it => list += `<a href="${it.url}" target="_blank">${it.name}</a>`);
+          document.getElementById('modalBody').innerHTML = list || '<p style="text-align:center;color:#94a3b8;padding:60px;">Pasta vazia.</p>';
+        })
+        .withFailureHandler(() => document.getElementById('modalBody').innerHTML = '<p style="color:#ef4444;text-align:center;">Erro ao carregar pasta.</p>')
+        .getDriveFolderContents(folderId);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    window.onload = () => {
+      google.script.run.withSuccessHandler(email => {
+        document.getElementById('user').innerHTML = `👤 ${email.split('@')[0]}`;
+      }).getUserEmail();
+
+      loadDashboard();
+
+      const modal = document.getElementById('modal');
+      modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    };
+  </script>
+</body>
+</html>
