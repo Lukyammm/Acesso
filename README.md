@@ -23,6 +23,7 @@
 ## Funções principais (resumo)
 - `getAdminData()`: retorna e-mail atual, permissão de admin e configuração.
 - `saveConfigObject(configObj)`: valida e salva a configuração com histórico de alterações.
+- `duplicateCategory()`: duplica uma categoria existente no painel para facilitar ajustes rápidos.
 - `resetToDefault()`: restaura o modelo padrão.
 - `getAuditLog(limit)`: retorna histórico recente de alterações.
 - `undoLastChange()`: desfaz a última alteração salva.

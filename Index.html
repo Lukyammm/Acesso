@@ -221,6 +221,7 @@
           <div class="field"><label>Cor</label><input id="catColor" type="text" placeholder="#1e40af"></div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="saveCategory()">Salvar Categoria</button>
+            <button class="btn btn-secondary" onclick="duplicateCategory()">Duplicar</button>
             <button class="btn btn-danger" onclick="deleteCategory()">Excluir</button>
             <button class="btn btn-light" onclick="newCategory()">Nova</button>
           </div>
@@ -593,6 +594,27 @@
       adminDraft.categories = adminDraft.categories.filter(c => c.id !== selectedCategoryId);
       selectedCategoryId = adminDraft.categories.length ? adminDraft.categories[0].id : null;
       selectedSubtopicId = null;
+      selectedItemIndex = -1;
+      fillAdminScreen();
+    }
+
+    function duplicateCategory() {
+      const current = getSelectedCategory();
+      if (!current) return alert('Selecione uma categoria para duplicar.');
+
+      const clone = JSON.parse(JSON.stringify(current));
+      const baseName = (clone.name || 'Categoria').trim();
+      clone.id = slugify(baseName + '-copia-' + Date.now());
+      clone.name = baseName + ' (Cópia)';
+
+      clone.subtopics = (clone.subtopics || []).map((sub, idx) => ({
+        ...sub,
+        id: slugify((sub.title || 'secao') + '-copia-' + Date.now() + '-' + idx),
+      }));
+
+      adminDraft.categories.push(clone);
+      selectedCategoryId = clone.id;
+      selectedSubtopicId = clone.subtopics.length ? clone.subtopics[0].id : null;
       selectedItemIndex = -1;
       fillAdminScreen();
     }
