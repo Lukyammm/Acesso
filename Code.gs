@@ -168,6 +168,34 @@ function getDriveFolderContents(folderId) {
   }
 }
 
+
+function normalizeItemType(type, item) {
+  const raw = String(type || '').trim().toLowerCase();
+  if (['link', 'sheet', 'folder'].includes(raw)) {
+    return raw;
+  }
+
+  // Compatibilidade com configurações legadas.
+  if (['form', 'forms', 'formulario', 'formulário'].includes(raw)) {
+    return 'link';
+  }
+
+  if (['planilha', 'planilhas', 'spreadsheet'].includes(raw)) {
+    return 'sheet';
+  }
+
+  if (['pasta', 'pastas', 'drive-folder', 'drive_folder'].includes(raw)) {
+    return 'folder';
+  }
+
+  const hasFolderId = String(item && item.folderId || '').trim();
+  if (hasFolderId) {
+    return 'folder';
+  }
+
+  return 'link';
+}
+
 function sanitizeConfig(configObj) {
   const base = configObj || {};
   const categories = Array.isArray(base.categories) ? base.categories : [];
@@ -192,7 +220,7 @@ function sanitizeConfig(configObj) {
               return {
                 name: String(item.name || '').trim(),
                 desc: String(item.desc || '').trim(),
-                type: String(item.type || 'link').trim(),
+                type: normalizeItemType(item.type || 'link', item),
                 url: String(item.url || '').trim(),
                 folderId: String(item.folderId || '').trim(),
               };
