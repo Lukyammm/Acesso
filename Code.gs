@@ -169,18 +169,31 @@ function getDriveFolderContents(folderId) {
 }
 
 
-function normalizeItemType(type) {
+function normalizeItemType(type, item) {
   const raw = String(type || '').trim().toLowerCase();
   if (['link', 'sheet', 'folder'].includes(raw)) {
     return raw;
   }
 
-  // Compatibilidade com configurações antigas que usavam "form" para links de Formulários.
+  // Compatibilidade com configurações legadas.
   if (['form', 'forms', 'formulario', 'formulário'].includes(raw)) {
     return 'link';
   }
 
-  return raw;
+  if (['planilha', 'planilhas', 'spreadsheet'].includes(raw)) {
+    return 'sheet';
+  }
+
+  if (['pasta', 'pastas', 'drive-folder', 'drive_folder'].includes(raw)) {
+    return 'folder';
+  }
+
+  const hasFolderId = String(item && item.folderId || '').trim();
+  if (hasFolderId) {
+    return 'folder';
+  }
+
+  return 'link';
 }
 
 function sanitizeConfig(configObj) {
@@ -207,7 +220,7 @@ function sanitizeConfig(configObj) {
               return {
                 name: String(item.name || '').trim(),
                 desc: String(item.desc || '').trim(),
-                type: normalizeItemType(item.type || 'link'),
+                type: normalizeItemType(item.type || 'link', item),
                 url: String(item.url || '').trim(),
                 folderId: String(item.folderId || '').trim(),
               };
