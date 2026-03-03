@@ -9,6 +9,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     :root {
+      --font-system: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       --primary: #3877ff;
       --primary-dark: #255fec;
       --bg-strong: #0f172a;
@@ -20,9 +21,13 @@
       --shadow-soft: 0 18px 46px rgba(15, 23, 42, 0.12);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-system);
+    }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
       min-height: 100vh;
       color: var(--text-primary);
       background:
@@ -175,6 +180,40 @@
       background: #fff; font-size: .95rem;
     }
 
+    .color-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .color-preview {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+
+    .color-palette-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .color-swatch {
+      border: 2px solid transparent;
+      border-radius: 10px;
+      height: 42px;
+      cursor: pointer;
+    }
+
+    .color-swatch.active {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.15);
+    }
+
     .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
     .btn {
       border: none; border-radius: 10px; padding: 10px 13px; font-weight: 600;
@@ -262,7 +301,14 @@
           <div>
             <div class="field"><label>Nome da categoria</label><input id="catName" type="text"></div>
             <div class="field"><label>Ícone (FontAwesome)</label><input id="catIcon" type="text" placeholder="fa-folder"></div>
-            <div class="field"><label>Cor da categoria</label><input id="catColor" type="text" placeholder="#1e40af"></div>
+            <div class="field">
+              <label>Cor da categoria</label>
+              <div class="color-input-row">
+                <input id="catColor" type="text" placeholder="#1e40af" oninput="syncColorPreview('catColor', 'catColorPreview')">
+                <button class="btn btn-light" type="button" onclick="openColorPickerModal('catColor')">Escolher</button>
+                <div class="color-preview" id="catColorPreview"></div>
+              </div>
+            </div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="saveCategory()">Salvar categoria</button>
               <button class="btn btn-text" onclick="newCategory()">Nova</button>
@@ -328,7 +374,11 @@
             </div>
             <div class="field">
               <label>Cor principal</label>
-              <input id="primaryColorInput" type="text" placeholder="#1e40af">
+              <div class="color-input-row">
+                <input id="primaryColorInput" type="text" placeholder="#1e40af" oninput="syncColorPreview('primaryColorInput', 'primaryColorPreview')">
+                <button class="btn btn-light" type="button" onclick="openColorPickerModal('primaryColorInput')">Escolher</button>
+                <div class="color-preview" id="primaryColorPreview"></div>
+              </div>
             </div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="saveAllAdmin()">Salvar tudo</button>
@@ -361,6 +411,26 @@
     </div>
   </div>
 
+  <div class="modal" id="colorPickerModal">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>Escolher cor (Hexadecimal)</h3>
+        <button class="close-btn" onclick="closeColorPickerModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="color-palette-grid" id="colorPaletteGrid"></div>
+        <div class="field">
+          <label>Valor hexadecimal</label>
+          <input id="hexColorInput" type="text" placeholder="#1e40af" maxlength="7" oninput="handleHexInputChange()">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="applyColorFromModal()">Aplicar</button>
+          <button class="btn btn-text" type="button" onclick="closeColorPickerModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     let currentConfig = {};
     let adminDraft = null;
@@ -372,6 +442,8 @@
     let selectedItemIndex = -1;
     let currentTask = 'categoria';
     const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
+    const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#84cc16', '#eab308', '#f97316', '#dc2626', '#be123c', '#9333ea', '#7c3aed', '#0f172a'];
+    let colorTargetInputId = null;
 
     function switchTab(n) {
       document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
@@ -530,6 +602,8 @@
 
       document.getElementById('appNameInput').value = adminDraft.appName || '';
       document.getElementById('primaryColorInput').value = adminDraft.primaryColor || '';
+      syncColorPreview('catColor', 'catColorPreview');
+      syncColorPreview('primaryColorInput', 'primaryColorPreview');
 
       if (!selectedCategoryId && adminDraft.categories.length) {
         selectedCategoryId = adminDraft.categories[0].id;
@@ -626,6 +700,74 @@
       document.getElementById('catName').value = cat ? cat.name : '';
       document.getElementById('catIcon').value = cat ? cat.icon : 'fa-folder';
       document.getElementById('catColor').value = cat ? cat.color : '#1e40af';
+      syncColorPreview('catColor', 'catColorPreview');
+    }
+
+    function normalizeHexColor(value) {
+      const text = String(value || '').trim();
+      const fullHex = /^#[0-9a-fA-F]{6}$/;
+      return fullHex.test(text) ? text.toLowerCase() : '';
+    }
+
+    function syncColorPreview(inputId, previewId) {
+      const value = document.getElementById(inputId).value;
+      const hex = normalizeHexColor(value);
+      document.getElementById(previewId).style.background = hex || '#ffffff';
+    }
+
+    function openColorPickerModal(targetInputId) {
+      colorTargetInputId = targetInputId;
+      const currentValue = document.getElementById(targetInputId).value;
+      const hex = normalizeHexColor(currentValue) || '#1e40af';
+      document.getElementById('hexColorInput').value = hex;
+      renderColorPalette(hex);
+      document.getElementById('colorPickerModal').style.display = 'flex';
+    }
+
+    function renderColorPalette(selectedColor) {
+      const grid = document.getElementById('colorPaletteGrid');
+      grid.innerHTML = colorPalette.map(color => `
+        <button
+          type="button"
+          class="color-swatch ${color === selectedColor ? 'active' : ''}"
+          style="background:${color};"
+          onclick="selectColorSwatch('${color}')"
+          title="${color}">
+        </button>
+      `).join('');
+    }
+
+    function selectColorSwatch(color) {
+      document.getElementById('hexColorInput').value = color;
+      renderColorPalette(color);
+    }
+
+    function handleHexInputChange() {
+      const hex = normalizeHexColor(document.getElementById('hexColorInput').value);
+      renderColorPalette(hex);
+    }
+
+    function applyColorFromModal() {
+      if (!colorTargetInputId) return;
+      const hex = normalizeHexColor(document.getElementById('hexColorInput').value);
+      if (!hex) {
+        alert('Informe uma cor hexadecimal válida no formato #RRGGBB.');
+        return;
+      }
+
+      document.getElementById(colorTargetInputId).value = hex;
+      if (colorTargetInputId === 'catColor') {
+        syncColorPreview('catColor', 'catColorPreview');
+      }
+      if (colorTargetInputId === 'primaryColorInput') {
+        syncColorPreview('primaryColorInput', 'primaryColorPreview');
+      }
+      closeColorPickerModal();
+    }
+
+    function closeColorPickerModal() {
+      document.getElementById('colorPickerModal').style.display = 'none';
+      colorTargetInputId = null;
     }
 
     function fillSubtopicForm() {
@@ -871,7 +1013,14 @@
       loadInitialData();
       const modal = document.getElementById('modal');
       modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+      const colorPickerModal = document.getElementById('colorPickerModal');
+      colorPickerModal.addEventListener('click', e => { if (e.target === colorPickerModal) closeColorPickerModal(); });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          closeModal();
+          closeColorPickerModal();
+        }
+      });
     };
   </script>
 </body>
