@@ -138,29 +138,34 @@
     }
     .panel h3 { margin-bottom: 6px; }
 
-    .task-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-top: 10px; }
-    .task-card {
-      border: 1px solid #d7e0ed;
-      border-radius: 14px;
-      padding: 12px;
-      background: rgba(255,255,255,.72);
-      cursor: pointer;
+    .admin-shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px 0 28px;
     }
-    .task-card.active { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
-    .task-card p { margin-top: 5px; font-size: .84rem; color: #64748b; }
+    .admin-kicker {
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .admin-title { font-size: 2rem; margin-bottom: 8px; }
+    .assistant-progress {
+      margin: 28px 0 18px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .assistant-step { margin-bottom: 22px; }
+    .assistant-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+    }
 
-    .wizard {
-      display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px;
-      margin-top: 10px;
-    }
-    .wizard-step {
-      background: rgba(255,255,255,.72);
-      border: 1px solid #d7e0ed;
-      border-radius: 14px;
-      padding: 12px;
-    }
-    .wizard-step.active { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
-    .wizard-step strong { font-size: .9rem; }
+
 
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
@@ -179,6 +184,7 @@
     .btn-secondary { background: #64748b; color: #fff; }
     .btn-danger { background: #dc2626; color: #fff; }
     .btn-light { background: #e2e8f0; color: #0f172a; }
+    .btn-text { background: transparent; color: #334155; padding-inline: 4px; }
 
     .list {
       border: 1px solid #dbe3ee; border-radius: 10px;
@@ -204,13 +210,12 @@
     .close-btn { border:none; background:none; font-size:26px; cursor:pointer; }
 
     @media (max-width: 1100px) {
-      .task-grid, .wizard { grid-template-columns: repeat(2, minmax(0,1fr)); }
     }
     @media (max-width: 980px) {
       .sidebar { position: static; width: auto; height: auto; }
       .main { margin-left: 0; padding-top: 16px; }
       .topbar { position: static; }
-      .grid, .stats-grid, .task-grid, .wizard { grid-template-columns: 1fr; }
+      .grid, .stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -242,109 +247,107 @@
   </div>
 
   <div class="main hidden" id="adminView">
-    <h1 style="margin-bottom: 6px;">Administração simplificada</h1>
-    <p class="muted" style="margin-bottom: 12px;">Escolha uma tarefa e siga os passos. Tudo foi organizado para edição rápida e sem confusão.</p>
+    <div class="admin-shell">
+      <p class="admin-kicker">Assistente de administração</p>
+      <h1 class="admin-title">Faça uma coisa por vez.</h1>
+      <p class="muted">Siga os passos na ordem. Cada tela mostra apenas o necessário.</p>
 
-    <div class="panel">
-      <h3>O que você quer fazer?</h3>
-      <div class="task-grid">
-        <div class="task-card active" id="task-categoria" onclick="setAdminTask('categoria')"><strong>1) Categoria</strong><p>Criar, editar, duplicar e excluir categoria.</p></div>
-        <div class="task-card" id="task-secao" onclick="setAdminTask('secao')"><strong>2) Seção</strong><p>Organizar as seções da categoria selecionada.</p></div>
-        <div class="task-card" id="task-item" onclick="setAdminTask('item')"><strong>3) Item</strong><p>Adicionar links, planilhas e pastas do Drive.</p></div>
-        <div class="task-card" id="task-publicar" onclick="setAdminTask('publicar')"><strong>4) Publicar</strong><p>Salvar tudo, revisar histórico ou desfazer.</p></div>
-      </div>
+      <div class="assistant-progress" id="assistantProgress">Passo 1 de 4 · Categoria</div>
 
-      <div class="wizard">
-        <div class="wizard-step" id="step1"><strong>Passo 1</strong><p class="muted">Selecione uma categoria na lista.</p></div>
-        <div class="wizard-step" id="step2"><strong>Passo 2</strong><p class="muted">Faça a alteração desejada no formulário.</p></div>
-        <div class="wizard-step" id="step3"><strong>Passo 3</strong><p class="muted">Clique em "Salvar tudo" para publicar.</p></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>Configuração geral</h3>
-      <div class="grid">
-        <div class="field">
-          <label>Nome do portal</label>
-          <input id="appNameInput" type="text" placeholder="Ex.: Portal Institucional">
-        </div>
-        <div class="field">
-          <label>Cor principal</label>
-          <input id="primaryColorInput" type="text" placeholder="#1e40af">
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="categoriaPanel">
-      <h3>Categorias</h3>
-      <div class="grid">
-        <div><div class="list" id="categoryList"></div></div>
-        <div>
-          <div class="field"><label>Nome da categoria</label><input id="catName" type="text"></div>
-          <div class="field"><label>Ícone (FontAwesome)</label><input id="catIcon" type="text" placeholder="fa-folder"></div>
-          <div class="field"><label>Cor da categoria</label><input id="catColor" type="text" placeholder="#1e40af"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="saveCategory()">Salvar categoria</button>
-            <button class="btn btn-secondary" onclick="duplicateCategory()">Duplicar</button>
-            <button class="btn btn-danger" onclick="deleteCategory()">Excluir</button>
-            <button class="btn btn-light" onclick="newCategory()">Nova</button>
+      <div class="panel assistant-step" id="step-categoria">
+        <h3>1) Categoria</h3>
+        <p class="muted">Selecione ou crie uma categoria.</p>
+        <div class="grid">
+          <div><div class="list" id="categoryList"></div></div>
+          <div>
+            <div class="field"><label>Nome da categoria</label><input id="catName" type="text"></div>
+            <div class="field"><label>Ícone (FontAwesome)</label><input id="catIcon" type="text" placeholder="fa-folder"></div>
+            <div class="field"><label>Cor da categoria</label><input id="catColor" type="text" placeholder="#1e40af"></div>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="saveCategory()">Salvar categoria</button>
+              <button class="btn btn-text" onclick="newCategory()">Nova</button>
+              <button class="btn btn-text" onclick="duplicateCategory()">Duplicar</button>
+              <button class="btn btn-text" onclick="deleteCategory()">Excluir</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="panel" id="secaoPanel">
-      <h3>Seções da categoria</h3>
-      <div class="grid">
-        <div><div class="list" id="subtopicList"></div></div>
-        <div>
-          <div class="field"><label>Título da seção</label><input id="subTitle" type="text"></div>
-          <div class="field"><label>Ícone (FontAwesome)</label><input id="subIcon" type="text" placeholder="fa-link"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="saveSubtopic()">Salvar seção</button>
-            <button class="btn btn-danger" onclick="deleteSubtopic()">Excluir</button>
-            <button class="btn btn-light" onclick="newSubtopic()">Nova</button>
+      <div class="panel assistant-step hidden" id="step-secao">
+        <h3>2) Seção</h3>
+        <p class="muted">Agora organize as seções da categoria selecionada.</p>
+        <div class="grid">
+          <div><div class="list" id="subtopicList"></div></div>
+          <div>
+            <div class="field"><label>Título da seção</label><input id="subTitle" type="text"></div>
+            <div class="field"><label>Ícone (FontAwesome)</label><input id="subIcon" type="text" placeholder="fa-link"></div>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="saveSubtopic()">Salvar seção</button>
+              <button class="btn btn-text" onclick="newSubtopic()">Nova</button>
+              <button class="btn btn-text" onclick="deleteSubtopic()">Excluir</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="panel" id="itemPanel">
-      <h3>Itens da seção</h3>
-      <div class="grid">
-        <div><div class="list" id="itemList"></div></div>
-        <div>
-          <div class="field"><label>Nome do item</label><input id="itemName" type="text"></div>
-          <div class="field"><label>Descrição</label><input id="itemDesc" type="text"></div>
-          <div class="field">
-            <label>Tipo</label>
-            <select id="itemType" onchange="toggleItemFields()">
-              <option value="link">Link</option>
-              <option value="sheet">Planilha</option>
-              <option value="folder">Pasta Drive</option>
-            </select>
-          </div>
-          <div class="field" id="urlField"><label>URL</label><input id="itemUrl" type="text" placeholder="https://..."></div>
-          <div class="field hidden" id="folderField"><label>ID da pasta</label><input id="itemFolderId" type="text"></div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="saveItem()">Salvar item</button>
-            <button class="btn btn-danger" onclick="deleteItem()">Excluir</button>
-            <button class="btn btn-light" onclick="newItem()">Novo</button>
+      <div class="panel assistant-step hidden" id="step-item">
+        <h3>3) Item</h3>
+        <p class="muted">Adicione o item da seção selecionada.</p>
+        <div class="grid">
+          <div><div class="list" id="itemList"></div></div>
+          <div>
+            <div class="field"><label>Nome do item</label><input id="itemName" type="text"></div>
+            <div class="field"><label>Descrição</label><input id="itemDesc" type="text"></div>
+            <div class="field">
+              <label>Tipo</label>
+              <select id="itemType" onchange="toggleItemFields()">
+                <option value="link">Link</option>
+                <option value="sheet">Planilha</option>
+                <option value="folder">Pasta Drive</option>
+              </select>
+            </div>
+            <div class="field" id="urlField"><label>URL</label><input id="itemUrl" type="text" placeholder="https://..."></div>
+            <div class="field hidden" id="folderField"><label>ID da pasta</label><input id="itemFolderId" type="text"></div>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="saveItem()">Salvar item</button>
+              <button class="btn btn-text" onclick="newItem()">Novo</button>
+              <button class="btn btn-text" onclick="deleteItem()">Excluir</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="panel" id="publicarPanel">
-      <h3>Publicar e histórico</h3>
-      <p class="muted">Finalize as alterações com "Salvar tudo". Se precisar, recarregue ou desfaça a última publicação.</p>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="saveAllAdmin()">Salvar tudo</button>
-        <button class="btn btn-secondary" onclick="reloadAdminData()">Recarregar</button>
-        <button class="btn btn-danger" onclick="restoreDefault()">Restaurar padrão</button>
-        <button class="btn btn-light" onclick="undoLastChange()">Desfazer última alteração</button>
+      <div class="panel assistant-step hidden" id="step-publicar">
+        <h3>4) Publicar</h3>
+        <p class="muted">Finalize e publique as alterações.</p>
+        <div class="grid">
+          <div>
+            <div class="field">
+              <label>Nome do portal</label>
+              <input id="appNameInput" type="text" placeholder="Ex.: Portal Institucional">
+            </div>
+            <div class="field">
+              <label>Cor principal</label>
+              <input id="primaryColorInput" type="text" placeholder="#1e40af">
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="saveAllAdmin()">Salvar tudo</button>
+              <button class="btn btn-text" onclick="reloadAdminData()">Recarregar</button>
+              <button class="btn btn-text" onclick="undoLastChange()">Desfazer última alteração</button>
+              <button class="btn btn-text" onclick="restoreDefault()">Restaurar padrão</button>
+            </div>
+          </div>
+          <div>
+            <p class="muted" style="margin-bottom:8px;">Histórico recente</p>
+            <div class="list" id="auditList"></div>
+          </div>
+        </div>
       </div>
-      <div style="margin-top: 12px" class="list" id="auditList"></div>
+
+      <div class="assistant-nav">
+        <button class="btn btn-text" id="backStepBtn" onclick="changeAdminStep(-1)">Voltar</button>
+        <button class="btn btn-primary" id="nextStepBtn" onclick="changeAdminStep(1)">Próximo passo</button>
+      </div>
     </div>
   </div>
 
@@ -368,6 +371,7 @@
     let selectedSubtopicId = null;
     let selectedItemIndex = -1;
     let currentTask = 'categoria';
+    const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
 
     function switchTab(n) {
       document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
@@ -503,19 +507,22 @@
     }
 
     function setAdminTask(task) {
-      currentTask = task;
-      ['categoria', 'secao', 'item', 'publicar'].forEach(id => {
-        document.getElementById(`task-${id}`).classList.toggle('active', id === task);
+      currentTask = adminSteps.includes(task) ? task : 'categoria';
+      adminSteps.forEach(id => {
+        document.getElementById(`step-${id}`).classList.toggle('hidden', id !== currentTask);
       });
 
-      document.getElementById('categoriaPanel').style.display = task === 'categoria' ? 'block' : 'none';
-      document.getElementById('secaoPanel').style.display = task === 'secao' ? 'block' : 'none';
-      document.getElementById('itemPanel').style.display = task === 'item' ? 'block' : 'none';
-      document.getElementById('publicarPanel').style.display = task === 'publicar' ? 'block' : 'none';
+      const stepIndex = adminSteps.indexOf(currentTask);
+      document.getElementById('assistantProgress').textContent = `Passo ${stepIndex + 1} de ${adminSteps.length} · ${currentTask.charAt(0).toUpperCase() + currentTask.slice(1)}`;
+      document.getElementById('backStepBtn').style.visibility = stepIndex === 0 ? 'hidden' : 'visible';
+      document.getElementById('nextStepBtn').style.visibility = stepIndex === adminSteps.length - 1 ? 'hidden' : 'visible';
+    }
 
-      document.getElementById('step1').classList.toggle('active', task === 'categoria' || task === 'secao' || task === 'item');
-      document.getElementById('step2').classList.toggle('active', task === 'secao' || task === 'item' || task === 'publicar');
-      document.getElementById('step3').classList.toggle('active', task === 'publicar');
+    function changeAdminStep(direction) {
+      const idx = adminSteps.indexOf(currentTask);
+      const next = idx + direction;
+      if (next < 0 || next >= adminSteps.length) return;
+      setAdminTask(adminSteps[next]);
     }
 
     function fillAdminScreen() {
