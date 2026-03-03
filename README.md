@@ -29,6 +29,11 @@
 - `undoLastChange()`: desfaz a última alteração salva.
 - `getDriveFolderContents(folderId)`: lista arquivos e subpastas de uma pasta do Drive.
 
+## UI/UX aplicada
+- Dashboard com layout glassmorphism e cartões de resumo (categorias, seções e itens).
+- Administração em fluxo guiado por tarefas: Categoria, Seção, Item e Publicação.
+- Edição com mensagens claras de rascunho para reduzir erro antes de publicar.
+
 ## Limitações conhecidas
 - O histórico é salvo em `Script Properties` com retenção das últimas 20 entradas.
 - Em ambientes com domínio externo, `Session.getActiveUser().getEmail()` pode retornar vazio conforme política da conta.
