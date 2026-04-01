@@ -214,6 +214,50 @@
       box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.15);
     }
 
+    .icon-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-preview {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    .icon-picker-search {
+      margin-bottom: 12px;
+    }
+
+    .icon-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .icon-swatch {
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      height: 42px;
+      cursor: pointer;
+      background: #fff;
+      color: #1e293b;
+    }
+
+    .icon-swatch.active {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
+      background: #f1f5f9;
+    }
+
     .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
     .btn {
       border: 1px solid transparent; border-radius: 8px; padding: 10px 13px; font-weight: 600;
@@ -306,7 +350,14 @@
           <div><div class="list" id="categoryList"></div></div>
           <div>
             <div class="field"><label>Nome da categoria</label><input id="catName" type="text"></div>
-            <div class="field"><label>Ícone (FontAwesome)</label><input id="catIcon" type="text" placeholder="fa-folder"></div>
+            <div class="field">
+              <label>Ícone (FontAwesome)</label>
+              <div class="icon-input-row">
+                <input id="catIcon" type="text" placeholder="fa-folder" oninput="syncIconPreview('catIcon', 'catIconPreview')">
+                <button class="btn btn-light" type="button" onclick="openIconPickerModal('catIcon')">Escolher</button>
+                <div class="icon-preview" id="catIconPreview"><i class="fas fa-folder"></i></div>
+              </div>
+            </div>
             <div class="field">
               <label>Cor da categoria</label>
               <div class="color-input-row">
@@ -332,7 +383,14 @@
           <div><div class="list" id="subtopicList"></div></div>
           <div>
             <div class="field"><label>Título da seção</label><input id="subTitle" type="text"></div>
-            <div class="field"><label>Ícone (FontAwesome)</label><input id="subIcon" type="text" placeholder="fa-link"></div>
+            <div class="field">
+              <label>Ícone (FontAwesome)</label>
+              <div class="icon-input-row">
+                <input id="subIcon" type="text" placeholder="fa-link" oninput="syncIconPreview('subIcon', 'subIconPreview')">
+                <button class="btn btn-light" type="button" onclick="openIconPickerModal('subIcon')">Escolher</button>
+                <div class="icon-preview" id="subIconPreview"><i class="fas fa-link"></i></div>
+              </div>
+            </div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="saveSubtopic()">Salvar seção</button>
               <button class="btn btn-text" onclick="newSubtopic()">Nova</button>
@@ -437,6 +495,27 @@
     </div>
   </div>
 
+  <div class="modal" id="iconPickerModal">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3>Escolher ícone (FontAwesome)</h3>
+        <button class="close-btn" onclick="closeIconPickerModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field icon-picker-search">
+          <label>Pesquisar ícone</label>
+          <input id="iconSearchInput" type="text" placeholder="Ex.: folder, chart, users" oninput="handleIconSearchChange()">
+        </div>
+        <div class="icon-picker-grid" id="iconPickerGrid"></div>
+        <p class="muted" id="iconPickerEmpty" style="display:none;margin-top:10px;">Nenhum ícone encontrado para este filtro.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="applyIconFromModal()">Aplicar</button>
+          <button class="btn btn-text" type="button" onclick="closeIconPickerModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     let currentConfig = {};
     let adminDraft = null;
@@ -449,7 +528,10 @@
     let currentTask = 'categoria';
     const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
     const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#84cc16', '#eab308', '#f97316', '#dc2626', '#be123c', '#9333ea', '#7c3aed', '#0f172a'];
+    const iconPalette = ['fa-folder', 'fa-folder-open', 'fa-link', 'fa-chart-line', 'fa-chart-column', 'fa-users', 'fa-user-gear', 'fa-gear', 'fa-cogs', 'fa-building', 'fa-landmark', 'fa-briefcase', 'fa-file', 'fa-file-lines', 'fa-file-excel', 'fa-file-word', 'fa-file-pdf', 'fa-database', 'fa-table', 'fa-calendar-days', 'fa-envelope', 'fa-bell', 'fa-book', 'fa-circle-info', 'fa-screwdriver-wrench', 'fa-shield-halved', 'fa-wallet', 'fa-handshake', 'fa-truck', 'fa-headset'];
     let colorTargetInputId = null;
+    let iconTargetInputId = null;
+    let selectedModalIcon = 'fa-folder';
 
     function switchTab(n) {
       document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
@@ -707,6 +789,7 @@
       document.getElementById('catIcon').value = cat ? cat.icon : 'fa-folder';
       document.getElementById('catColor').value = cat ? cat.color : '#1e40af';
       syncColorPreview('catColor', 'catColorPreview');
+      syncIconPreview('catIcon', 'catIconPreview');
     }
 
     function normalizeHexColor(value) {
@@ -780,6 +863,66 @@
       const sub = getSelectedSubtopic();
       document.getElementById('subTitle').value = sub ? sub.title : '';
       document.getElementById('subIcon').value = sub ? sub.icon : 'fa-link';
+      syncIconPreview('subIcon', 'subIconPreview');
+    }
+
+    function syncIconPreview(inputId, previewId) {
+      const iconName = String(document.getElementById(inputId).value || '').trim() || 'fa-circle-question';
+      document.getElementById(previewId).innerHTML = `<i class="fas ${iconName}"></i>`;
+    }
+
+    function openIconPickerModal(targetInputId) {
+      iconTargetInputId = targetInputId;
+      const currentIcon = String(document.getElementById(targetInputId).value || '').trim();
+      selectedModalIcon = currentIcon || 'fa-folder';
+      document.getElementById('iconSearchInput').value = '';
+      renderIconPalette();
+      document.getElementById('iconPickerModal').style.display = 'flex';
+    }
+
+    function renderIconPalette() {
+      const query = String(document.getElementById('iconSearchInput').value || '').trim().toLowerCase();
+      const options = iconPalette.filter(icon => icon.toLowerCase().includes(query));
+      const grid = document.getElementById('iconPickerGrid');
+      const empty = document.getElementById('iconPickerEmpty');
+
+      empty.style.display = options.length ? 'none' : 'block';
+      grid.innerHTML = options.map(icon => `
+        <button
+          type="button"
+          class="icon-swatch ${icon === selectedModalIcon ? 'active' : ''}"
+          onclick="selectModalIcon('${icon}')"
+          title="${icon}">
+          <i class="fas ${icon}"></i>
+        </button>
+      `).join('');
+    }
+
+    function handleIconSearchChange() {
+      renderIconPalette();
+    }
+
+    function selectModalIcon(icon) {
+      selectedModalIcon = icon;
+      renderIconPalette();
+    }
+
+    function applyIconFromModal() {
+      if (!iconTargetInputId) return;
+      const icon = selectedModalIcon || 'fa-folder';
+      document.getElementById(iconTargetInputId).value = icon;
+      if (iconTargetInputId === 'catIcon') {
+        syncIconPreview('catIcon', 'catIconPreview');
+      }
+      if (iconTargetInputId === 'subIcon') {
+        syncIconPreview('subIcon', 'subIconPreview');
+      }
+      closeIconPickerModal();
+    }
+
+    function closeIconPickerModal() {
+      document.getElementById('iconPickerModal').style.display = 'none';
+      iconTargetInputId = null;
     }
 
     function fillItemForm() {
@@ -1044,10 +1187,13 @@
       modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
       const colorPickerModal = document.getElementById('colorPickerModal');
       colorPickerModal.addEventListener('click', e => { if (e.target === colorPickerModal) closeColorPickerModal(); });
+      const iconPickerModal = document.getElementById('iconPickerModal');
+      iconPickerModal.addEventListener('click', e => { if (e.target === iconPickerModal) closeIconPickerModal(); });
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           closeModal();
           closeColorPickerModal();
+          closeIconPickerModal();
         }
       });
     };
