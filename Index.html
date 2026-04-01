@@ -353,16 +353,16 @@
             <div class="field">
               <label>Ícone (FontAwesome)</label>
               <div class="icon-input-row">
-                <input id="catIcon" type="text" placeholder="fa-folder" oninput="syncIconPreview('catIcon', 'catIconPreview')">
-                <button class="btn btn-light" type="button" onclick="openIconPickerModal('catIcon')">Escolher</button>
+                <input id="catIcon" type="hidden">
+                <button class="btn btn-light" type="button" onclick="openIconPickerModal('catIcon')">Escolher ícone</button>
                 <div class="icon-preview" id="catIconPreview"><i class="fas fa-folder"></i></div>
               </div>
             </div>
             <div class="field">
               <label>Cor da categoria</label>
               <div class="color-input-row">
-                <input id="catColor" type="text" placeholder="#1e40af" oninput="syncColorPreview('catColor', 'catColorPreview')">
-                <button class="btn btn-light" type="button" onclick="openColorPickerModal('catColor')">Escolher</button>
+                <input id="catColor" type="hidden">
+                <button class="btn btn-light" type="button" onclick="openColorPickerModal('catColor')">Escolher cor</button>
                 <div class="color-preview" id="catColorPreview"></div>
               </div>
             </div>
@@ -386,8 +386,8 @@
             <div class="field">
               <label>Ícone (FontAwesome)</label>
               <div class="icon-input-row">
-                <input id="subIcon" type="text" placeholder="fa-link" oninput="syncIconPreview('subIcon', 'subIconPreview')">
-                <button class="btn btn-light" type="button" onclick="openIconPickerModal('subIcon')">Escolher</button>
+                <input id="subIcon" type="hidden">
+                <button class="btn btn-light" type="button" onclick="openIconPickerModal('subIcon')">Escolher ícone</button>
                 <div class="icon-preview" id="subIconPreview"><i class="fas fa-link"></i></div>
               </div>
             </div>
@@ -439,8 +439,8 @@
             <div class="field">
               <label>Cor principal</label>
               <div class="color-input-row">
-                <input id="primaryColorInput" type="text" placeholder="#1e40af" oninput="syncColorPreview('primaryColorInput', 'primaryColorPreview')">
-                <button class="btn btn-light" type="button" onclick="openColorPickerModal('primaryColorInput')">Escolher</button>
+                <input id="primaryColorInput" type="hidden">
+                <button class="btn btn-light" type="button" onclick="openColorPickerModal('primaryColorInput')">Escolher cor</button>
                 <div class="color-preview" id="primaryColorPreview"></div>
               </div>
             </div>
