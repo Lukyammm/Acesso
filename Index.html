@@ -219,6 +219,10 @@
       border: none; border-radius: 10px; padding: 10px 13px; font-weight: 600;
       cursor: pointer;
     }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-secondary { background: #64748b; color: #fff; }
     .btn-danger { background: #dc2626; color: #fff; }
@@ -381,7 +385,7 @@
               </div>
             </div>
             <div class="btn-row">
-              <button class="btn btn-primary" onclick="saveAllAdmin()">Salvar tudo</button>
+              <button class="btn btn-primary" id="saveAllBtn" onclick="saveAllAdmin()">Salvar tudo</button>
               <button class="btn btn-text" onclick="reloadAdminData()">Recarregar</button>
               <button class="btn btn-text" onclick="undoLastChange()">Desfazer última alteração</button>
               <button class="btn btn-text" onclick="restoreDefault()">Restaurar padrão</button>
@@ -942,19 +946,42 @@
       document.getElementById('folderField').classList.toggle('hidden', type !== 'folder');
     }
 
+    let isSavingAllAdmin = false;
+
+    function setSaveAllLoading(isLoading) {
+      const saveButton = document.getElementById('saveAllBtn');
+      if (!saveButton) return;
+      saveButton.disabled = isLoading;
+      saveButton.textContent = isLoading ? 'Salvando...' : 'Salvar tudo';
+    }
+
     function saveAllAdmin() {
+      if (isSavingAllAdmin) return;
+
       adminDraft.appName = document.getElementById('appNameInput').value.trim();
       adminDraft.primaryColor = document.getElementById('primaryColorInput').value.trim();
 
-      google.script.run.withSuccessHandler(res => {
-        alert(res.message);
-        if (res.success) {
-          currentConfig = JSON.parse(JSON.stringify(adminDraft));
-          loadDashboard();
-          loadAudit();
-          switchTab(0);
-        }
-      }).saveConfigObject(adminDraft);
+      isSavingAllAdmin = true;
+      setSaveAllLoading(true);
+
+      google.script.run
+        .withSuccessHandler(res => {
+          alert(res.message);
+          if (res.success) {
+            currentConfig = JSON.parse(JSON.stringify(adminDraft));
+            loadDashboard();
+            loadAudit();
+            switchTab(0);
+          }
+          isSavingAllAdmin = false;
+          setSaveAllLoading(false);
+        })
+        .withFailureHandler(err => {
+          alert('❌ Erro inesperado ao salvar: ' + (err && err.message ? err.message : err));
+          isSavingAllAdmin = false;
+          setSaveAllLoading(false);
+        })
+        .saveConfigObject(adminDraft);
     }
 
     function reloadAdminData() {
