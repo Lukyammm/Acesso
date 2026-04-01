@@ -69,11 +69,25 @@ function saveConfigObject(configObj) {
 
     const serialized = JSON.stringify(sanitized);
     PropertiesService.getScriptProperties().setProperty(CONFIG_PROPERTY, serialized);
-    appendAudit('save', email, current, sanitized);
+
+    const auditResult = appendAuditSafe('save', email, current, sanitized);
+    if (!auditResult.success) {
+      return {
+        success: true,
+        message: '✅ Configuração salva com sucesso! ⚠️ Histórico de auditoria reduzido por limite de armazenamento.'
+      };
+    }
 
     return { success: true, message: '✅ Configuração salva com sucesso!' };
   } catch (e) {
-    return { success: false, message: '❌ Erro ao salvar: ' + e.message };
+    const message = String(e && e.message ? e.message : e);
+    if (message.toLowerCase().indexOf('quota') !== -1 || message.toLowerCase().indexOf('cota') !== -1) {
+      return {
+        success: false,
+        message: '❌ Erro ao salvar: limite de armazenamento do Script Properties atingido. Reduza a quantidade/tamanho de itens e tente novamente.'
+      };
+    }
+    return { success: false, message: '❌ Erro ao salvar: ' + message };
   }
 }
 
@@ -295,6 +309,22 @@ function getAdminEmailsList() {
     .split(',')
     .map(function (v) { return v.trim().toLowerCase(); })
     .filter(function (v) { return !!v; });
+}
+
+function appendAuditSafe(action, email, beforeConfig, afterConfig) {
+  try {
+    appendAudit(action, email, beforeConfig, afterConfig);
+    return { success: true };
+  } catch (e) {
+    const logs = getAuditEntries().slice(0, 3);
+    try {
+      PropertiesService.getScriptProperties().setProperty(AUDIT_LOG_PROPERTY, JSON.stringify(logs));
+      appendAudit(action, email, beforeConfig, afterConfig);
+      return { success: true };
+    } catch (retryError) {
+      return { success: false };
+    }
+  }
 }
 
 function appendAudit(action, email, beforeConfig, afterConfig) {
