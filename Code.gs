@@ -5,7 +5,11 @@
 const CONFIG_PROPERTY = 'DASHBOARD_CONFIG';
 const ADMIN_EMAILS_PROPERTY = 'ADMIN_EMAILS';
 const AUDIT_LOG_PROPERTY = 'DASHBOARD_AUDIT';
+const CONFIG_FILE_ID_PROPERTY = 'DASHBOARD_CONFIG_FILE_ID';
+const AUDIT_FILE_ID_PROPERTY = 'DASHBOARD_AUDIT_FILE_ID';
 const MAX_AUDIT_ENTRIES = 20;
+const CONFIG_FILE_NAME = 'acesso-dashboard-config.json';
+const AUDIT_FILE_NAME = 'acesso-dashboard-audit.json';
 
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
@@ -29,6 +33,11 @@ function getAdminData() {
 }
 
 function getConfig() {
+  const fileConfig = readJsonFromFileProperty(CONFIG_FILE_ID_PROPERTY);
+  if (fileConfig && typeof fileConfig === 'object') {
+    return sanitizeConfig(fileConfig);
+  }
+
   const props = PropertiesService.getScriptProperties();
   let configStr = props.getProperty(CONFIG_PROPERTY);
 
@@ -68,6 +77,7 @@ function saveConfigObject(configObj) {
     }
 
     const serialized = JSON.stringify(sanitized);
+    writeJsonToFileProperty(CONFIG_FILE_ID_PROPERTY, CONFIG_FILE_NAME, sanitized);
     PropertiesService.getScriptProperties().setProperty(CONFIG_PROPERTY, serialized);
 
     const auditResult = appendAuditSafe('save', email, current, sanitized);
@@ -99,6 +109,7 @@ function resetToDefault() {
 
   const current = getConfig();
   const defaultConfig = getDefaultConfig();
+  writeJsonToFileProperty(CONFIG_FILE_ID_PROPERTY, CONFIG_FILE_NAME, defaultConfig);
   PropertiesService.getScriptProperties().setProperty(CONFIG_PROPERTY, JSON.stringify(defaultConfig));
   appendAudit('reset', email, current, defaultConfig);
   return { success: true, message: '✅ Configuração restaurada para o padrão original!' };
@@ -127,7 +138,9 @@ function undoLastChange() {
   }
 
   const last = logs.shift();
+  writeJsonToFileProperty(CONFIG_FILE_ID_PROPERTY, CONFIG_FILE_NAME, last.before);
   PropertiesService.getScriptProperties().setProperty(CONFIG_PROPERTY, JSON.stringify(last.before));
+  writeJsonToFileProperty(AUDIT_FILE_ID_PROPERTY, AUDIT_FILE_NAME, logs);
   PropertiesService.getScriptProperties().setProperty(AUDIT_LOG_PROPERTY, JSON.stringify(logs));
 
   return {
@@ -338,10 +351,16 @@ function appendAudit(action, email, beforeConfig, afterConfig) {
   });
 
   const trimmed = logs.slice(0, MAX_AUDIT_ENTRIES);
+  writeJsonToFileProperty(AUDIT_FILE_ID_PROPERTY, AUDIT_FILE_NAME, trimmed);
   PropertiesService.getScriptProperties().setProperty(AUDIT_LOG_PROPERTY, JSON.stringify(trimmed));
 }
 
 function getAuditEntries() {
+  const fileLogs = readJsonFromFileProperty(AUDIT_FILE_ID_PROPERTY);
+  if (Array.isArray(fileLogs)) {
+    return fileLogs;
+  }
+
   const raw = PropertiesService.getScriptProperties().getProperty(AUDIT_LOG_PROPERTY) || '[]';
   try {
     const parsed = JSON.parse(raw);
@@ -349,6 +368,40 @@ function getAuditEntries() {
   } catch (e) {
     return [];
   }
+}
+
+function readJsonFromFileProperty(fileIdPropertyName) {
+  const props = PropertiesService.getScriptProperties();
+  const fileId = String(props.getProperty(fileIdPropertyName) || '').trim();
+  if (!fileId) return null;
+
+  try {
+    const file = DriveApp.getFileById(fileId);
+    const content = file.getBlob().getDataAsString('UTF-8');
+    if (!content) return null;
+    return JSON.parse(content);
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeJsonToFileProperty(fileIdPropertyName, fileName, data) {
+  const props = PropertiesService.getScriptProperties();
+  let fileId = String(props.getProperty(fileIdPropertyName) || '').trim();
+  const json = JSON.stringify(data);
+
+  try {
+    if (fileId) {
+      const file = DriveApp.getFileById(fileId);
+      file.setContent(json);
+      return;
+    }
+  } catch (e) {
+    fileId = '';
+  }
+
+  const file = DriveApp.createFile(fileName, json, MimeType.PLAIN_TEXT);
+  props.setProperty(fileIdPropertyName, file.getId());
 }
 
 function slugify(text) {
