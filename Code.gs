@@ -400,8 +400,12 @@ function writeJsonToFileProperty(fileIdPropertyName, fileName, data) {
     fileId = '';
   }
 
-  const file = DriveApp.createFile(fileName, json, MimeType.PLAIN_TEXT);
-  props.setProperty(fileIdPropertyName, file.getId());
+  try {
+    const file = DriveApp.createFile(fileName, json, MimeType.PLAIN_TEXT);
+    props.setProperty(fileIdPropertyName, file.getId());
+  } catch (e) {
+    // Sem permissão de escrita no Drive: mantém persistência no Script Properties.
+  }
 }
 
 function slugify(text) {
