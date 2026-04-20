@@ -105,113 +105,24 @@
     .tab.active { color: #fff; background: var(--primary); }
     .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
     .theme-switcher {
-      --pill-bg: #f8fafc;
-      --pill-active: #4f46e5;
-      --pill-active-text: #ffffff;
-      --pill-thumb-shadow: 0 6px 16px rgba(79, 70, 229, .25);
-      --pill-offset: 4px;
-      --pill-track-width: 168px;
-      --pill-item-size: 48px;
-      --pill-gap: 6px;
-      --pill-item-total: calc((var(--pill-track-width) - (var(--pill-offset) * 2) - (var(--pill-gap) * 2)) / 3);
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: var(--pill-track-width);
-      height: 56px;
-      padding: var(--pill-offset);
-      border: 1px solid color-mix(in srgb, var(--stroke) 75%, transparent);
-      border-radius: 999px;
-      background: var(--pill-bg);
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
-      gap: var(--pill-gap);
-      overflow: hidden;
-      transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
-    }
-    .theme-switcher:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
-    }
-    .theme-slider {
-      position: absolute;
-      top: var(--pill-offset);
-      left: var(--pill-offset);
-      width: var(--pill-item-total);
-      height: calc(100% - (var(--pill-offset) * 2));
-      border-radius: 999px;
-      background: var(--pill-active);
-      box-shadow: var(--pill-thumb-shadow);
-      transform: translateX(0);
-      transition: transform .3s ease, background .3s ease, box-shadow .3s ease, opacity .3s ease;
-      z-index: 1;
-    }
-    .theme-switcher[data-active-theme="dark"] .theme-slider {
-      transform: translateX(calc(var(--pill-item-total) + var(--pill-gap)));
-    }
-    .theme-switcher[data-active-theme="army"] .theme-slider {
-      transform: translateX(calc((var(--pill-item-total) * 2) + (var(--pill-gap) * 2)));
-      background: linear-gradient(135deg, #7c3aed 0%, #9333ea 50%, #c084fc 100%);
-      box-shadow: 0 0 0 1px rgba(216, 180, 254, 0.35), 0 0 20px rgba(147, 51, 234, 0.45);
-    }
-    .theme-option {
-      position: relative;
-      z-index: 2;
-      flex: 1;
-      min-width: 0;
-      border: none;
-      background: transparent;
-      color: #64748b;
-      min-height: var(--pill-item-size);
-      border-radius: 999px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      width: 48px;
+      height: 48px;
+      border: 1px solid color-mix(in srgb, var(--stroke) 75%, transparent);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-secondary);
       cursor: pointer;
-      transition: color .3s ease, opacity .3s ease, transform .2s ease;
-      font-weight: 600;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-    .theme-option i { font-size: .92rem; }
-    .theme-option[data-theme-option="army"] i { color: #a855f7; }
-    .theme-option[data-theme-option="army"].active i { color: #f3e8ff; }
-    .theme-option .theme-label {
-      max-width: 0;
-      opacity: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      font-size: .72rem;
-      letter-spacing: .02em;
-      text-transform: uppercase;
-      transition: max-width .3s ease, opacity .22s ease;
+    .theme-switcher:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
     }
-    .theme-option:hover { transform: translateY(-1px); }
-    .theme-option.active {
-      color: var(--pill-active-text);
-      text-shadow: 0 1px 6px rgba(15, 23, 42, 0.25);
-    }
-    .theme-option.active .theme-label {
-      max-width: 54px;
-      opacity: .94;
-    }
-
-    body[data-theme="light"] .theme-switcher {
-      --pill-bg: #f8fafc;
-      --pill-active: #4f46e5;
-      --pill-thumb-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
-    }
-
-    body[data-theme="dark"] .theme-switcher {
-      --pill-bg: #0f172a;
-      --pill-active: #6366f1;
-      --pill-thumb-shadow: 0 8px 20px rgba(99, 102, 241, 0.32);
-    }
-
-    body[data-theme="army"] .theme-switcher {
-      --pill-bg: #f3e8ff;
-      --pill-active: #7c3aed;
-      --pill-thumb-shadow: 0 0 0 1px rgba(216, 180, 254, 0.4), 0 0 18px rgba(147, 51, 234, 0.45);
-      box-shadow: 0 0 0 1px rgba(216, 180, 254, 0.65), 0 10px 24px rgba(124, 58, 237, 0.22);
-    }
+    .theme-switcher i { font-size: .98rem; }
     .user { font-weight: 500; color: var(--text-secondary); }
 
     .sidebar {
@@ -519,18 +430,9 @@
       <div class="tab" id="adminTab" onclick="enterAdmin()">Administração</div>
     </div>
     <div class="topbar-actions">
-      <div class="theme-switcher" id="themeSwitcher" data-active-theme="light" role="group" aria-label="Alternar tema">
-        <div class="theme-slider" aria-hidden="true"></div>
-        <button class="theme-option" type="button" data-theme-option="light" onclick="changeTheme('light')" title="Tema claro">
-          <i class="fas fa-sun"></i><span class="theme-label">Claro</span>
-        </button>
-        <button class="theme-option" type="button" data-theme-option="dark" onclick="changeTheme('dark')" title="Tema escuro">
-          <i class="fas fa-moon"></i><span class="theme-label">Escuro</span>
-        </button>
-        <button class="theme-option" type="button" data-theme-option="army" onclick="changeTheme('army')" title="Tema ARMY">
-          <i class="fas fa-heart"></i><span class="theme-label">ARMY</span>
-        </button>
-      </div>
+      <button class="theme-switcher" id="themeSwitcher" type="button" data-active-theme="light" aria-label="Alternar tema" title="Alternar tema" onclick="cycleTheme()">
+        <i class="fas fa-sun" id="themeSwitcherIcon"></i>
+      </button>
       <div class="user" id="user">Carregando...</div>
     </div>
   </div>
@@ -751,6 +653,7 @@
     let selectedModalIcon = 'fa-folder';
     const THEME_KEY = 'portal_nugesp_theme';
     const DEFAULT_THEME = 'light';
+    const THEME_ORDER = ['light', 'dark', 'army'];
 
     function switchTab(n) {
       document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
@@ -813,19 +716,35 @@
     }
 
     function normalizeTheme(theme) {
-      return ['light', 'dark', 'army'].includes(theme) ? theme : DEFAULT_THEME;
+      return THEME_ORDER.includes(theme) ? theme : DEFAULT_THEME;
+    }
+
+    function getThemeIcon(theme) {
+      if (theme === 'dark') return 'fa-moon';
+      if (theme === 'army') return 'fa-heart';
+      return 'fa-sun';
+    }
+
+    function getThemeLabel(theme) {
+      if (theme === 'dark') return 'escuro';
+      if (theme === 'army') return 'ARMY';
+      return 'claro';
     }
 
     function applyTheme(theme) {
       const safeTheme = normalizeTheme(theme);
       document.body.dataset.theme = safeTheme;
       const switcher = document.getElementById('themeSwitcher');
+      const switcherIcon = document.getElementById('themeSwitcherIcon');
       if (switcher) {
         switcher.dataset.activeTheme = safeTheme;
+        const label = getThemeLabel(safeTheme);
+        switcher.setAttribute('aria-label', `Tema ${label}. Clique para alternar`);
+        switcher.title = `Tema ${label}. Clique para alternar`;
       }
-      document.querySelectorAll('.theme-option').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.themeOption === safeTheme);
-      });
+      if (switcherIcon) {
+        switcherIcon.className = `fas ${getThemeIcon(safeTheme)}`;
+      }
     }
 
     function applySavedTheme() {
@@ -841,6 +760,13 @@
       if (isAdmin && adminDraft) {
         fillAdminScreen();
       }
+    }
+
+    function cycleTheme() {
+      const currentTheme = normalizeTheme(document.body.dataset.theme || DEFAULT_THEME);
+      const currentIndex = THEME_ORDER.indexOf(currentTheme);
+      const nextTheme = THEME_ORDER[(currentIndex + 1) % THEME_ORDER.length];
+      changeTheme(nextTheme);
     }
 
     function resolveThemeIcon(iconName) {
