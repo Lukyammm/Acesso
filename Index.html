@@ -194,9 +194,9 @@
     .panel {
       background: var(--surface);
       border: 1px solid var(--stroke);
-      border-radius: 8px;
+      border-radius: 10px;
       box-shadow: var(--shadow-soft);
-      padding: 24px;
+      padding: 28px;
       margin-bottom: 16px;
     }
     .panel h3 { margin-bottom: 6px; }
@@ -214,7 +214,8 @@
       margin-bottom: 8px;
       font-weight: 600;
     }
-    .admin-title { font-size: 2rem; margin-bottom: 8px; }
+    .admin-title { font-size: 1.625rem; margin-bottom: 8px; font-weight: 600; }
+    .admin-shell > .muted { max-width: 54ch; line-height: 1.45; }
     .assistant-progress {
       margin: 28px 0 18px;
       font-weight: 600;
@@ -226,21 +227,32 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 18px;
+      position: sticky;
+      bottom: 16px;
+      z-index: 20;
+      padding: 10px 12px;
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow-card);
     }
 
 
 
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field label { font-size: .84rem; color: var(--text-secondary); font-weight: 600; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: .86rem; color: var(--text-secondary); font-weight: 600; }
+    .field-primary input { border-color: color-mix(in srgb, var(--primary) 35%, var(--stroke)); }
     .field input, .field select {
-      border: 1px solid var(--stroke); border-radius: 8px; padding: 10px 12px;
+      border: 1px solid var(--stroke); border-radius: 10px; padding: 12px 14px;
+      min-height: 44px;
       background: var(--surface); font-size: .95rem; color: var(--text-primary);
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
     }
     .field input:focus, .field select:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(31, 63, 107, 0.12);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
     }
 
     .color-input-row {
@@ -250,11 +262,11 @@
     }
 
     .color-preview {
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
       border-radius: 10px;
-      border: 1px solid var(--stroke);
+      border: 2px solid var(--stroke);
       background: var(--surface);
     }
 
@@ -270,7 +282,9 @@
       border-radius: 10px;
       height: 42px;
       cursor: pointer;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
     }
+    .color-swatch:hover { transform: translateY(-1px); }
 
     .color-swatch.active {
       border-color: var(--primary-dark);
@@ -284,11 +298,11 @@
     }
 
     .icon-preview {
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
       border-radius: 10px;
-      border: 1px solid var(--stroke);
+      border: 2px solid var(--stroke);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -313,7 +327,9 @@
       cursor: pointer;
       background: var(--surface);
       color: var(--text-primary);
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
     }
+    .icon-swatch:hover { transform: translateY(-1px); }
 
     .icon-swatch.active {
       border-color: var(--primary-dark);
@@ -321,20 +337,29 @@
       background: #f1f5f9;
     }
 
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; align-items: center; }
     .btn {
-      border: 1px solid transparent; border-radius: 8px; padding: 10px 13px; font-weight: 600;
+      border: 1px solid transparent; border-radius: 10px; padding: 10px 14px; min-height: 42px; font-weight: 600;
       cursor: pointer;
+      transition: transform .14s ease, filter .14s ease, background-color .14s ease, border-color .14s ease;
+    }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.01); }
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
     }
     .btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-secondary { background: #4b5563; color: #fff; }
-    .btn-danger { background: #991b1b; color: #fff; }
+    .btn-secondary { background: var(--button-light-bg); color: var(--button-light-text); border-color: var(--button-light-border); }
+    .btn-danger { background: #dc2626; color: #fff; }
     .btn-light { background: var(--button-light-bg); color: var(--button-light-text); border-color: var(--button-light-border); }
-    .btn-text { background: transparent; color: var(--text-secondary); padding-inline: 4px; }
+    .btn-text { background: transparent; color: var(--text-secondary); padding-inline: 8px; min-height: 40px; }
+
+    .icon-input-row .btn,
+    .color-input-row .btn { min-width: 140px; }
 
     .list {
       border: 1px solid var(--stroke); border-radius: 8px;
@@ -342,12 +367,28 @@
     }
     .list-item {
       display: flex; justify-content: space-between; gap: 10px;
-      font-size: .9rem; padding: 10px 12px;
+      font-size: .92rem; padding: 12px 14px;
+      align-items: center;
       border-bottom: 1px solid var(--stroke); cursor: pointer;
+      border-left: 4px solid transparent;
+      transition: background-color .14s ease, border-color .14s ease;
     }
-    .list-item:nth-child(even) { background: var(--surface-muted); }
+    .list-item:hover { background: color-mix(in srgb, var(--hover-soft) 55%, transparent); }
+    .list-item:nth-child(even) { background: color-mix(in srgb, var(--surface-muted) 35%, transparent); }
     .list-item:last-child { border-bottom: none; }
-    .list-item.active { background: var(--hover-soft); }
+    .list-item.active {
+      background: color-mix(in srgb, var(--primary) 14%, transparent);
+      border-left-color: var(--primary);
+    }
+    .list-meta {
+      font-size: .78rem;
+      color: var(--text-secondary);
+      opacity: .8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 130px;
+    }
 
     .modal { display:none; position: fixed; inset:0; background: rgba(10,14,27,.55); align-items:center; justify-content:center; z-index: 400; }
     .modal-content {
@@ -419,7 +460,7 @@
         <div class="grid">
           <div><div class="list" id="categoryList"></div></div>
           <div>
-            <div class="field"><label>Nome da categoria</label><input id="catName" type="text"></div>
+            <div class="field field-primary"><label>Nome da categoria</label><input id="catName" type="text"></div>
             <div class="field">
               <label>Ícone (FontAwesome)</label>
               <div class="icon-input-row">
@@ -438,9 +479,9 @@
             </div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="saveCategory()">Salvar categoria</button>
-              <button class="btn btn-text" onclick="newCategory()">Nova</button>
-              <button class="btn btn-text" onclick="duplicateCategory()">Duplicar</button>
-              <button class="btn btn-text" onclick="deleteCategory()">Excluir</button>
+              <button class="btn btn-secondary" onclick="newCategory()">Nova</button>
+              <button class="btn btn-secondary" onclick="duplicateCategory()">Duplicar</button>
+              <button class="btn btn-danger" onclick="deleteCategory()">Excluir</button>
             </div>
           </div>
         </div>
@@ -463,8 +504,8 @@
             </div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="saveSubtopic()">Salvar seção</button>
-              <button class="btn btn-text" onclick="newSubtopic()">Nova</button>
-              <button class="btn btn-text" onclick="deleteSubtopic()">Excluir</button>
+              <button class="btn btn-secondary" onclick="newSubtopic()">Nova</button>
+              <button class="btn btn-danger" onclick="deleteSubtopic()">Excluir</button>
             </div>
           </div>
         </div>
@@ -490,8 +531,8 @@
             <div class="field hidden" id="folderField"><label>ID da pasta</label><input id="itemFolderId" type="text"></div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="saveItem()">Salvar item</button>
-              <button class="btn btn-text" onclick="newItem()">Novo</button>
-              <button class="btn btn-text" onclick="deleteItem()">Excluir</button>
+              <button class="btn btn-secondary" onclick="newItem()">Novo</button>
+              <button class="btn btn-danger" onclick="deleteItem()">Excluir</button>
             </div>
           </div>
         </div>
@@ -829,13 +870,19 @@
       return (category.subtopics || []).find(s => s.id === selectedSubtopicId);
     }
 
+    function compactMeta(value) {
+      const text = String(value || '').trim();
+      if (text.length <= 12) return text;
+      return `${text.slice(0, 5)}...${text.slice(-4)}`;
+    }
+
     function renderCategoryList() {
       const el = document.getElementById('categoryList');
       const list = adminDraft.categories || [];
       el.innerHTML = list.map(c => `
         <div class="list-item ${c.id === selectedCategoryId ? 'active' : ''}" onclick="selectCategory('${c.id}')">
           <span>${c.name}</span>
-          <span class="muted">${c.id}</span>
+          <span class="list-meta" title="${c.id}">${compactMeta(c.id)}</span>
         </div>
       `).join('') || '<div class="list-item">Sem categorias</div>';
     }
@@ -855,7 +902,7 @@
       el.innerHTML = cat.subtopics.map(s => `
         <div class="list-item ${s.id === selectedSubtopicId ? 'active' : ''}" onclick="selectSubtopic('${s.id}')">
           <span>${s.title}</span>
-          <span class="muted">${s.id}</span>
+          <span class="list-meta" title="${s.id}">${compactMeta(s.id)}</span>
         </div>
       `).join('') || '<div class="list-item">Sem seções</div>';
     }
@@ -873,7 +920,7 @@
       el.innerHTML = sub.items.map((it, idx) => `
         <div class="list-item ${idx === selectedItemIndex ? 'active' : ''}" onclick="selectItem(${idx})">
           <span>${it.name}</span>
-          <span class="muted">${it.type}</span>
+          <span class="list-meta">${it.type}</span>
         </div>
       `).join('') || '<div class="list-item">Sem itens</div>';
     }
