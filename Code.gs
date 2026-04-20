@@ -1,5 +1,5 @@
 // =============================================
-// Code.gs - Portal Institucional
+// Code.gs - Portal Nugesp
 // =============================================
 
 const CONFIG_PROPERTY = 'DASHBOARD_CONFIG';
@@ -13,7 +13,7 @@ const AUDIT_FILE_NAME = 'acesso-dashboard-audit.json';
 
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Portal Institucional')
+    .setTitle('Portal Nugesp')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 }
@@ -151,7 +151,7 @@ function undoLastChange() {
 
 function getDefaultConfig() {
   return {
-    appName: 'Portal Institucional',
+    appName: 'Portal Nugesp',
     primaryColor: '#1e40af',
     categories: [
       {
@@ -228,7 +228,7 @@ function sanitizeConfig(configObj) {
   const categories = Array.isArray(base.categories) ? base.categories : [];
 
   return {
-    appName: String(base.appName || 'Portal Institucional').trim(),
+    appName: String(base.appName || 'Portal Nugesp').trim(),
     primaryColor: String(base.primaryColor || '#1e40af').trim(),
     categories: categories.map(function (cat, catIndex) {
       const subtopics = Array.isArray(cat.subtopics) ? cat.subtopics : [];
