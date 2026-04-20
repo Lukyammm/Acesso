@@ -11,18 +11,18 @@
 
     :root {
       --font-system: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      --primary: #4f46e5;
-      --primary-dark: #4338ca;
-      --bg-page: #f5f7fb;
+      --primary: #5b5af7;
+      --primary-dark: #4847da;
+      --bg-page: #f3f5ff;
       --bg-strong: #111827;
       --text-primary: #0f172a;
       --text-secondary: #475569;
-      --stroke: #dbe2ea;
+      --stroke: #d7dff0;
       --surface: #ffffff;
-      --surface-muted: #f8fafc;
+      --surface-muted: #f7f9ff;
       --sidebar-text: #e2e8f0;
       --sidebar-header: #94a3b8;
-      --hover-soft: #eef2ff;
+      --hover-soft: #e8edff;
       --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.07);
       --shadow-card: 0 4px 14px rgba(15, 23, 42, 0.06);
       --item-bg: #ffffff;
@@ -32,44 +32,44 @@
     }
 
     body[data-theme="dark"] {
-      --primary: #7c8cff;
-      --primary-dark: #6474f6;
-      --bg-page: #0b1220;
-      --bg-strong: #090f1d;
-      --text-primary: #e5e7eb;
-      --text-secondary: #94a3b8;
-      --stroke: #1f2a3e;
-      --surface: #111a2e;
-      --surface-muted: #0e1729;
+      --primary: #94a3ff;
+      --primary-dark: #7c8cff;
+      --bg-page: #090f1f;
+      --bg-strong: #060b16;
+      --text-primary: #e8ecff;
+      --text-secondary: #9aa7c1;
+      --stroke: #202b43;
+      --surface: #10192f;
+      --surface-muted: #0c1427;
       --sidebar-text: #d1d5db;
-      --sidebar-header: #7c8aa6;
-      --hover-soft: #1b2640;
+      --sidebar-header: #8695b4;
+      --hover-soft: #192742;
       --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.34);
       --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.3);
-      --item-bg: #0d1527;
-      --button-light-bg: #101a30;
+      --item-bg: #0d162a;
+      --button-light-bg: #0f1b33;
       --button-light-text: #d1d5db;
       --button-light-border: #334155;
     }
 
     body[data-theme="army"] {
-      --primary: #6d28d9;
-      --primary-dark: #5b21b6;
-      --bg-page: #f3f0ff;
-      --bg-strong: #1d1232;
-      --text-primary: #1f1239;
-      --text-secondary: #5b4d76;
-      --stroke: #d8cff0;
+      --primary: #7c3aed;
+      --primary-dark: #6d28d9;
+      --bg-page: #f6f1ff;
+      --bg-strong: #1b1130;
+      --text-primary: #261742;
+      --text-secondary: #5c4e79;
+      --stroke: #d8cdf2;
       --surface: #ffffff;
-      --surface-muted: #f6f1ff;
-      --sidebar-text: #efe8ff;
-      --sidebar-header: #c4b5fd;
-      --hover-soft: #ede9fe;
-      --shadow-soft: 0 12px 28px rgba(76, 29, 149, 0.12);
-      --shadow-card: 0 8px 20px rgba(76, 29, 149, 0.1);
+      --surface-muted: #f8f3ff;
+      --sidebar-text: #f2ecff;
+      --sidebar-header: #c8b8ff;
+      --hover-soft: #efe8ff;
+      --shadow-soft: 0 12px 28px rgba(91, 33, 182, 0.15);
+      --shadow-card: 0 8px 20px rgba(91, 33, 182, 0.12);
       --item-bg: #ffffff;
-      --button-light-bg: #f6f1ff;
-      --button-light-text: #3b0764;
+      --button-light-bg: #f5efff;
+      --button-light-text: #4c1d95;
       --button-light-border: #d8b4fe;
     }
 
@@ -104,14 +104,43 @@
     .tab:hover { background: var(--hover-soft); }
     .tab.active { color: #fff; background: var(--primary); }
     .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
-    .theme-select {
+    .theme-switcher {
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
       border: 1px solid var(--stroke);
-      border-radius: 8px;
-      padding: 8px 10px;
-      background: var(--surface);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-muted) 90%, var(--surface));
+    }
+    .theme-btn {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-secondary);
+      min-height: 36px;
+      padding: 0 12px;
+      font-weight: 700;
+      font-size: .82rem;
+      letter-spacing: .02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .theme-btn i { font-size: .88rem; }
+    .theme-btn:hover {
       color: var(--text-primary);
-      font-size: .88rem;
-      font-weight: 600;
+      background: color-mix(in srgb, var(--hover-soft) 70%, transparent);
+    }
+    .theme-btn.active {
+      color: #fff;
+      border-color: color-mix(in srgb, var(--primary-dark) 60%, transparent);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      box-shadow: 0 8px 18px color-mix(in srgb, var(--primary-dark) 26%, transparent);
+    }
+    .theme-btn[data-theme-option="army"].active {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
     }
     .user { font-weight: 500; color: var(--text-secondary); }
 
@@ -420,11 +449,17 @@
       <div class="tab" id="adminTab" onclick="enterAdmin()">Administração</div>
     </div>
     <div class="topbar-actions">
-      <select id="themeSelect" class="theme-select" onchange="changeTheme(this.value)">
-        <option value="light">Claro (padrão)</option>
-        <option value="dark">Escuro</option>
-        <option value="army">Army</option>
-      </select>
+      <div class="theme-switcher" role="group" aria-label="Alternar tema">
+        <button class="theme-btn" type="button" data-theme-option="light" onclick="changeTheme('light')" title="Tema claro">
+          <i class="fas fa-sun"></i><span>Claro</span>
+        </button>
+        <button class="theme-btn" type="button" data-theme-option="dark" onclick="changeTheme('dark')" title="Tema escuro">
+          <i class="fas fa-moon"></i><span>Escuro</span>
+        </button>
+        <button class="theme-btn" type="button" data-theme-option="army" onclick="changeTheme('army')" title="Tema ARMY">
+          <i class="fas fa-heart"></i><span>ARMY</span>
+        </button>
+      </div>
       <div class="user" id="user">Carregando...</div>
     </div>
   </div>
@@ -638,8 +673,8 @@
     let selectedItemIndex = -1;
     let currentTask = 'categoria';
     const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
-    const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#84cc16', '#eab308', '#f97316', '#dc2626', '#be123c', '#9333ea', '#7c3aed', '#0f172a'];
-    const iconPalette = ['fa-folder', 'fa-folder-open', 'fa-link', 'fa-chart-line', 'fa-chart-column', 'fa-users', 'fa-user-gear', 'fa-gear', 'fa-cogs', 'fa-building', 'fa-landmark', 'fa-briefcase', 'fa-file', 'fa-file-lines', 'fa-file-excel', 'fa-file-word', 'fa-file-pdf', 'fa-database', 'fa-table', 'fa-calendar-days', 'fa-envelope', 'fa-bell', 'fa-book', 'fa-circle-info', 'fa-screwdriver-wrench', 'fa-shield-halved', 'fa-wallet', 'fa-handshake', 'fa-truck', 'fa-headset'];
+    const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#65a30d', '#eab308', '#f97316', '#dc2626', '#be123c', '#db2777', '#9333ea', '#7c3aed', '#6d28d9', '#4f46e5', '#0ea5e9', '#06b6d4', '#0f766e', '#22c55e', '#84cc16', '#f59e0b', '#ef4444', '#111827', '#334155', '#475569'];
+    const iconPalette = ['fa-folder', 'fa-folder-open', 'fa-link', 'fa-chart-line', 'fa-chart-column', 'fa-users', 'fa-user-gear', 'fa-gear', 'fa-cogs', 'fa-building', 'fa-landmark', 'fa-briefcase', 'fa-file', 'fa-file-lines', 'fa-file-excel', 'fa-file-word', 'fa-file-pdf', 'fa-database', 'fa-table', 'fa-calendar-days', 'fa-envelope', 'fa-bell', 'fa-book', 'fa-circle-info', 'fa-screwdriver-wrench', 'fa-shield-halved', 'fa-wallet', 'fa-handshake', 'fa-truck', 'fa-headset', 'fa-music', 'fa-microphone-lines', 'fa-heart', 'fa-star', 'fa-gem', 'fa-wand-magic-sparkles', 'fa-headphones-simple'];
     let colorTargetInputId = null;
     let iconTargetInputId = null;
     let selectedModalIcon = 'fa-folder';
@@ -713,10 +748,9 @@
     function applyTheme(theme) {
       const safeTheme = normalizeTheme(theme);
       document.body.dataset.theme = safeTheme;
-      const themeSelect = document.getElementById('themeSelect');
-      if (themeSelect) {
-        themeSelect.value = safeTheme;
-      }
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeOption === safeTheme);
+      });
     }
 
     function applySavedTheme() {
@@ -728,6 +762,50 @@
       const safeTheme = normalizeTheme(theme);
       applyTheme(safeTheme);
       localStorage.setItem(THEME_KEY, safeTheme);
+      loadDashboard();
+      if (isAdmin && adminDraft) {
+        fillAdminScreen();
+      }
+    }
+
+    function resolveThemeIcon(iconName) {
+      const icon = String(iconName || '').trim() || 'fa-circle-question';
+      if (document.body.dataset.theme !== 'army') return icon;
+
+      const armyMap = {
+        'fa-folder': 'fa-star',
+        'fa-folder-open': 'fa-heart',
+        'fa-link': 'fa-music',
+        'fa-chart-line': 'fa-microphone-lines',
+        'fa-chart-column': 'fa-gem',
+        'fa-users': 'fa-heart',
+        'fa-user-gear': 'fa-wand-magic-sparkles',
+        'fa-gear': 'fa-star',
+        'fa-cogs': 'fa-gem',
+        'fa-building': 'fa-headphones-simple',
+        'fa-landmark': 'fa-gem',
+        'fa-briefcase': 'fa-heart',
+        'fa-file': 'fa-star',
+        'fa-file-lines': 'fa-music',
+        'fa-file-excel': 'fa-microphone-lines',
+        'fa-file-word': 'fa-heart',
+        'fa-file-pdf': 'fa-gem',
+        'fa-database': 'fa-star',
+        'fa-table': 'fa-star',
+        'fa-calendar-days': 'fa-heart',
+        'fa-envelope': 'fa-heart',
+        'fa-bell': 'fa-star',
+        'fa-book': 'fa-gem',
+        'fa-circle-info': 'fa-wand-magic-sparkles',
+        'fa-screwdriver-wrench': 'fa-wand-magic-sparkles',
+        'fa-shield-halved': 'fa-gem',
+        'fa-wallet': 'fa-heart',
+        'fa-handshake': 'fa-heart',
+        'fa-truck': 'fa-star',
+        'fa-headset': 'fa-headphones-simple'
+      };
+
+      return armyMap[icon] || icon;
     }
 
     function renderSidebar() {
@@ -736,7 +814,7 @@
       (currentConfig.categories || []).forEach(cat => {
         const div = document.createElement('div');
         div.className = 'sidebar-item' + (cat.id === currentCategoryId ? ' active' : '');
-        div.innerHTML = `<i class="fas ${cat.icon}"></i><span>${cat.name}</span>`;
+        div.innerHTML = `<i class="fas ${resolveThemeIcon(cat.icon)}"></i><span>${cat.name}</span>`;
         div.onclick = () => loadCategory(cat.id);
         sb.appendChild(div);
       });
@@ -755,7 +833,7 @@
         html += `
           <details class="accordion">
             <summary>
-              <i class="fas ${sub.icon}"></i>
+              <i class="fas ${resolveThemeIcon(sub.icon)}"></i>
               <span>${sub.title}</span>
               <i class="fas fa-chevron-down chevron"></i>
             </summary>
@@ -765,7 +843,8 @@
           html += `<p class="muted" style="padding:20px;text-align:center;">Nenhum item ainda.</p>`;
         } else {
           sub.items.forEach(item => {
-            const icon = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'fa-link';
+            const iconRaw = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'fa-link';
+            const icon = resolveThemeIcon(iconRaw);
             html += `
               <div class="item" onclick="openDashboardItem('${item.type}','${item.url || ''}','${item.folderId || ''}','${item.name || ''}')">
                 <i class="fas ${icon}"></i>
@@ -870,19 +949,13 @@
       return (category.subtopics || []).find(s => s.id === selectedSubtopicId);
     }
 
-    function compactMeta(value) {
-      const text = String(value || '').trim();
-      if (text.length <= 12) return text;
-      return `${text.slice(0, 5)}...${text.slice(-4)}`;
-    }
-
     function renderCategoryList() {
       const el = document.getElementById('categoryList');
       const list = adminDraft.categories || [];
       el.innerHTML = list.map(c => `
         <div class="list-item ${c.id === selectedCategoryId ? 'active' : ''}" onclick="selectCategory('${c.id}')">
           <span>${c.name}</span>
-          <span class="list-meta" title="${c.id}">${compactMeta(c.id)}</span>
+          <span class="list-meta">${(c.subtopics || []).length} seções</span>
         </div>
       `).join('') || '<div class="list-item">Sem categorias</div>';
     }
@@ -902,7 +975,7 @@
       el.innerHTML = cat.subtopics.map(s => `
         <div class="list-item ${s.id === selectedSubtopicId ? 'active' : ''}" onclick="selectSubtopic('${s.id}')">
           <span>${s.title}</span>
-          <span class="list-meta" title="${s.id}">${compactMeta(s.id)}</span>
+          <span class="list-meta">${(s.items || []).length} itens</span>
         </div>
       `).join('') || '<div class="list-item">Sem seções</div>';
     }
@@ -1028,7 +1101,7 @@
 
     function syncIconPreview(inputId, previewId) {
       const iconName = String(document.getElementById(inputId).value || '').trim() || 'fa-circle-question';
-      document.getElementById(previewId).innerHTML = `<i class="fas ${iconName}"></i>`;
+      document.getElementById(previewId).innerHTML = `<i class="fas ${resolveThemeIcon(iconName)}"></i>`;
     }
 
     function openIconPickerModal(targetInputId) {
@@ -1053,7 +1126,7 @@
           class="icon-swatch ${icon === selectedModalIcon ? 'active' : ''}"
           onclick="selectModalIcon('${icon}')"
           title="${icon}">
-          <i class="fas ${icon}"></i>
+          <i class="fas ${resolveThemeIcon(icon)}"></i>
         </button>
       `).join('');
     }
@@ -1150,12 +1223,12 @@
 
       const clone = JSON.parse(JSON.stringify(current));
       const baseName = (clone.name || 'Categoria').trim();
-      clone.id = slugify(baseName + '-copia-' + Date.now());
-      clone.name = baseName + ' (Cópia)';
+      clone.id = slugify(baseName + '-v' + Date.now());
+      clone.name = baseName + ' • versão';
 
       clone.subtopics = (clone.subtopics || []).map((sub, idx) => ({
         ...sub,
-        id: slugify((sub.title || 'secao') + '-copia-' + Date.now() + '-' + idx),
+        id: slugify((sub.title || 'secao') + '-v' + Date.now() + '-' + idx),
       }));
 
       adminDraft.categories.push(clone);
