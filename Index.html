@@ -135,14 +135,32 @@
     }
     .sidebar-header {
       font-size: .75rem; letter-spacing: 1.2px; color: var(--sidebar-header);
-      font-weight: 600; padding: 0 18px 14px;
+      font-weight: 600; padding: 0 18px 18px;
     }
     .sidebar-item {
-      margin: 0 8px 8px; padding: 14px 14px; border-radius: 8px;
+      margin: 0 8px 12px; padding: 14px 14px; border-radius: 12px;
       display: flex; gap: 12px; align-items: center; cursor: pointer;
-      transition: .2s;
+      border-left: 3px solid transparent;
+      transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease, border-color .2s ease;
     }
-    .sidebar-item:hover, .sidebar-item.active { background: color-mix(in srgb, var(--primary) 16%, transparent); color: #fff; }
+    .sidebar-item i {
+      width: 26px;
+      text-align: center;
+      font-size: 1rem;
+      opacity: .95;
+    }
+    .sidebar-item:hover {
+      background: color-mix(in srgb, var(--primary) 16%, transparent);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+      color: #fff;
+    }
+    .sidebar-item.active {
+      background: color-mix(in srgb, var(--primary) 24%, transparent);
+      border-left-color: color-mix(in srgb, #fff 78%, var(--primary));
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.24);
+      color: #fff;
+    }
 
     .main { margin-left: 284px; padding: 94px 30px 26px; }
     .hidden { display: none; }
@@ -150,55 +168,126 @@
     .dashboard-header {
       background: var(--surface);
       border: 1px solid var(--stroke);
-      border-radius: 8px;
+      border-radius: 14px;
       box-shadow: var(--shadow-soft);
-      padding: 24px;
-      margin-bottom: 16px;
+      padding: 36px;
+      margin-bottom: 22px;
     }
-    .dashboard-title { font-size: 1.7rem; margin-bottom: 5px; }
+    .dashboard-title { font-size: 2.35rem; line-height: 1.1; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.02em; }
     .muted { color: var(--text-secondary); font-size: .92rem; }
+    .dashboard-header .muted { font-size: .84rem; }
+    .dashboard-toolbar {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dashboard-search {
+      width: min(520px, 100%);
+      border: 1px solid var(--stroke);
+      background: var(--surface-muted);
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: .95rem;
+      color: var(--text-primary);
+      transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+    .dashboard-search:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+      transform: translateY(-1px);
+    }
     .stats-grid {
       display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .stat-card {
       background: var(--surface);
       border: 1px solid var(--stroke);
-      border-radius: 8px;
-      box-shadow: var(--shadow-soft);
+      border-radius: 14px;
       box-shadow: var(--shadow-card);
-      padding: 20px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-    .stat-label { color: var(--text-secondary); font-size: .82rem; }
-    .stat-value { font-size: 1.45rem; font-weight: 700; margin-top: 4px; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+    .stat-label { color: var(--text-secondary); font-size: .76rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+    .stat-value { font-size: 2.15rem; line-height: 1; font-weight: 800; margin-top: 8px; }
+    .stat-icon {
+      min-width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary) 14%, transparent);
+      color: var(--primary);
+      font-size: 1rem;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 24%, transparent);
+    }
 
     .accordion {
       background: var(--surface);
       border: 1px solid var(--stroke);
-      border-radius: 8px;
-      box-shadow: var(--shadow-soft);
+      border-radius: 14px;
+      box-shadow: var(--shadow-card);
       overflow: hidden;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .accordion:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+      border-color: color-mix(in srgb, var(--primary) 30%, var(--stroke));
     }
     .accordion summary {
       list-style: none;
       cursor: pointer;
       display: flex; align-items: center; gap: 12px;
-      padding: 18px 20px;
+      padding: 18px 20px 16px;
       background: var(--surface-muted);
       font-weight: 600;
     }
     .accordion summary::-webkit-details-marker { display: none; }
-    .chevron { margin-left: auto; }
-    .items-container { padding: 8px 14px 14px; }
+    .accordion-lead-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      color: var(--primary);
+    }
+    .accordion-title-wrap { display: flex; flex-direction: column; gap: 2px; }
+    .accordion-caption { font-size: .78rem; color: var(--text-secondary); font-weight: 500; }
+    .chevron { margin-left: auto; transition: transform .2s ease; }
+    .accordion[open] .chevron { transform: rotate(180deg); }
+    .items-container {
+      padding: 8px 14px 14px;
+      animation: revealAccordion .22s ease;
+    }
+    @keyframes revealAccordion {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .item {
       display: flex; align-items: center; gap: 12px;
       border: 1px solid var(--stroke);
       background: var(--item-bg);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 14px;
       margin-bottom: 8px;
       cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+      border-color: color-mix(in srgb, var(--primary) 30%, var(--stroke));
     }
 
     .panel {
@@ -443,12 +532,39 @@
     <div class="dashboard-header">
       <h1 class="dashboard-title" id="categoryTitle"></h1>
       <p class="muted">Navegue pelas seções e abra os links principais em um clique.</p>
+      <div class="dashboard-toolbar">
+        <input
+          id="dashboardSearch"
+          class="dashboard-search"
+          type="search"
+          placeholder="Buscar em seções e itens..."
+          oninput="applyDashboardSearch(this.value)"
+        >
+      </div>
     </div>
 
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">Categorias</div><div class="stat-value" id="statCategories">0</div></div>
-      <div class="stat-card"><div class="stat-label">Seções</div><div class="stat-value" id="statSubtopics">0</div></div>
-      <div class="stat-card"><div class="stat-label">Itens</div><div class="stat-value" id="statItems">0</div></div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Categorias</div>
+          <div class="stat-value" id="statCategories">0</div>
+        </div>
+        <span class="stat-icon"><i class="fas fa-layer-group"></i></span>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Seções</div>
+          <div class="stat-value" id="statSubtopics">0</div>
+        </div>
+        <span class="stat-icon"><i class="fas fa-sitemap"></i></span>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Itens</div>
+          <div class="stat-value" id="statItems">0</div>
+        </div>
+        <span class="stat-icon"><i class="fas fa-bolt"></i></span>
+      </div>
     </div>
 
     <div id="dashboardContent"></div>
@@ -654,6 +770,8 @@
     const THEME_KEY = 'portal_nugesp_theme';
     const DEFAULT_THEME = 'light';
     const THEME_ORDER = ['light', 'dark', 'army'];
+    const DASHBOARD_SEARCH_KEY = 'portal_nugesp_dashboard_search';
+    const ACCORDION_STATE_KEY = 'portal_nugesp_open_sections';
 
     function switchTab(n) {
       document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
@@ -701,6 +819,9 @@
       applyBranding();
       renderSidebar();
       updateDashboardStats();
+      const savedSearch = localStorage.getItem(DASHBOARD_SEARCH_KEY) || '';
+      const searchInput = document.getElementById('dashboardSearch');
+      if (searchInput) searchInput.value = savedSearch;
       if (currentConfig.categories && currentConfig.categories.length) {
         loadCategory(currentConfig.categories[0].id);
       } else {
@@ -821,6 +942,29 @@
       });
     }
 
+    function getAccordionState() {
+      try {
+        return JSON.parse(localStorage.getItem(ACCORDION_STATE_KEY) || '{}');
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function setAccordionOpenState(categoryId, subtopicId, isOpen) {
+      const state = getAccordionState();
+      if (!state[categoryId]) state[categoryId] = {};
+      state[categoryId][subtopicId] = !!isOpen;
+      localStorage.setItem(ACCORDION_STATE_KEY, JSON.stringify(state));
+    }
+
+    function getAccordionOpenState(categoryId, subtopicId, fallbackOpen) {
+      const state = getAccordionState();
+      if (state[categoryId] && typeof state[categoryId][subtopicId] === 'boolean') {
+        return state[categoryId][subtopicId];
+      }
+      return !!fallbackOpen;
+    }
+
     function loadCategory(catId) {
       currentCategoryId = catId;
       renderSidebar();
@@ -830,20 +974,42 @@
       document.getElementById('categoryTitle').innerHTML = `<span style="color:${cat.color}">${cat.name}</span>`;
 
       let html = '';
-      (cat.subtopics || []).forEach(sub => {
+      const searchTerm = (document.getElementById('dashboardSearch')?.value || '').trim().toLowerCase();
+      const visibleSubtopics = (cat.subtopics || []).filter(sub => {
+        if (!searchTerm) return true;
+        const titleMatch = String(sub.title || '').toLowerCase().includes(searchTerm);
+        const hasItemMatch = (sub.items || []).some(item =>
+          String(item.name || '').toLowerCase().includes(searchTerm) ||
+          String(item.desc || '').toLowerCase().includes(searchTerm)
+        );
+        return titleMatch || hasItemMatch;
+      });
+
+      visibleSubtopics.forEach((sub, index) => {
+        const openByDefault = searchTerm ? true : index === 0;
+        const shouldOpen = getAccordionOpenState(cat.id, sub.id, openByDefault);
         html += `
-          <details class="accordion">
+          <details class="accordion" data-subtopic-id="${sub.id}" ${shouldOpen ? 'open' : ''}>
             <summary>
-              <i class="fas ${resolveThemeIcon(sub.icon)}"></i>
-              <span>${sub.title}</span>
+              <span class="accordion-lead-icon"><i class="fas ${resolveThemeIcon(sub.icon)}"></i></span>
+              <span class="accordion-title-wrap">
+                <span>${sub.title}</span>
+                <span class="accordion-caption">${(sub.items || []).length} item(ns)</span>
+              </span>
               <i class="fas fa-chevron-down chevron"></i>
             </summary>
             <div class="items-container">`;
 
-        if (!sub.items || sub.items.length === 0) {
+        const visibleItems = (sub.items || []).filter(item => {
+          if (!searchTerm) return true;
+          return String(item.name || '').toLowerCase().includes(searchTerm) ||
+            String(item.desc || '').toLowerCase().includes(searchTerm);
+        });
+
+        if (!visibleItems.length) {
           html += `<p class="muted" style="padding:20px;text-align:center;">Nenhum item ainda.</p>`;
         } else {
-          sub.items.forEach(item => {
+          visibleItems.forEach(item => {
             const iconRaw = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'fa-link';
             const icon = resolveThemeIcon(iconRaw);
             html += `
@@ -864,7 +1030,23 @@
         html += '</div></details>';
       });
 
+      if (!html) {
+        html = `<div class="panel"><p class="muted" style="font-size:.95rem;">Nenhuma seção encontrada para a busca atual.</p></div>`;
+      }
+
       document.getElementById('dashboardContent').innerHTML = html;
+      document.querySelectorAll('.accordion').forEach(acc => {
+        acc.addEventListener('toggle', () => {
+          const subtopicId = acc.dataset.subtopicId;
+          if (!subtopicId || !currentCategoryId) return;
+          setAccordionOpenState(currentCategoryId, subtopicId, acc.open);
+        });
+      });
+    }
+
+    function applyDashboardSearch(value) {
+      localStorage.setItem(DASHBOARD_SEARCH_KEY, String(value || ''));
+      if (currentCategoryId) loadCategory(currentCategoryId);
     }
 
     function openFolder(folderId, title) {
