@@ -944,10 +944,18 @@
       return (adminDraft.categories || []).find(c => c.id === selectedCategoryId);
     }
 
+    function ensureCategorySubtopics(category) {
+      if (!category) return [];
+      if (!Array.isArray(category.subtopics)) {
+        category.subtopics = [];
+      }
+      return category.subtopics;
+    }
+
     function getSelectedSubtopic() {
       const category = getSelectedCategory();
       if (!category) return null;
-      return (category.subtopics || []).find(s => s.id === selectedSubtopicId);
+      return ensureCategorySubtopics(category).find(s => s.id === selectedSubtopicId);
     }
 
     function renderCategoryList() {
@@ -969,11 +977,13 @@
         return;
       }
 
-      if (!selectedSubtopicId && cat.subtopics.length) {
-        selectedSubtopicId = cat.subtopics[0].id;
+      const subtopics = ensureCategorySubtopics(cat);
+
+      if (!selectedSubtopicId && subtopics.length) {
+        selectedSubtopicId = subtopics[0].id;
       }
 
-      el.innerHTML = cat.subtopics.map(s => `
+      el.innerHTML = subtopics.map(s => `
         <div class="list-item ${s.id === selectedSubtopicId ? 'active' : ''}" onclick="selectSubtopic('${s.id}')">
           <span>${s.title}</span>
           <span class="list-meta">${(s.items || []).length} itens</span>
@@ -1247,6 +1257,7 @@
     function saveSubtopic() {
       const cat = getSelectedCategory();
       if (!cat) return alert('Selecione uma categoria.');
+      const subtopics = ensureCategorySubtopics(cat);
 
       const title = document.getElementById('subTitle').value.trim();
       const icon = document.getElementById('subIcon').value.trim() || 'fa-link';
@@ -1254,11 +1265,15 @@
 
       if (selectedSubtopicId) {
         const sub = getSelectedSubtopic();
+        if (!sub) {
+          selectedSubtopicId = null;
+          return saveSubtopic();
+        }
         sub.title = title;
         sub.icon = icon;
       } else {
         const id = slugify(title + '-' + Date.now());
-        cat.subtopics.push({ id, title, icon, items: [] });
+        subtopics.push({ id, title, icon, items: [] });
         selectedSubtopicId = id;
       }
 
@@ -1269,9 +1284,10 @@
     function deleteSubtopic() {
       const cat = getSelectedCategory();
       if (!cat || !selectedSubtopicId) return;
+      const subtopics = ensureCategorySubtopics(cat);
       if (!confirm('Excluir seção selecionada?')) return;
 
-      cat.subtopics = cat.subtopics.filter(s => s.id !== selectedSubtopicId);
+      cat.subtopics = subtopics.filter(s => s.id !== selectedSubtopicId);
       selectedSubtopicId = cat.subtopics.length ? cat.subtopics[0].id : null;
       selectedItemIndex = -1;
       fillAdminScreen();
