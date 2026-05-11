@@ -153,6 +153,7 @@ function getDefaultConfig() {
   return {
     appName: 'Portal Nugesp',
     primaryColor: '#1e40af',
+    iconStyle: 'solid',
     categories: [
       {
         id: 'crp',
@@ -230,6 +231,7 @@ function sanitizeConfig(configObj) {
   return {
     appName: String(base.appName || 'Portal Nugesp').trim(),
     primaryColor: String(base.primaryColor || '#1e40af').trim(),
+    iconStyle: String(base.iconStyle || 'solid').trim(),
     categories: categories.map(function (cat, catIndex) {
       const subtopics = Array.isArray(cat.subtopics) ? cat.subtopics : [];
       return {

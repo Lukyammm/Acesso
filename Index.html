@@ -319,6 +319,11 @@
       color: var(--text-primary);
       background: var(--surface-muted);
     }
+    .icon-appearance { color: var(--primary); -webkit-text-fill-color: currentColor; }
+    .icon-style-gradient .icon-appearance { background: linear-gradient(135deg, var(--primary), #06b6d4 45%, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+    .icon-style-matte .icon-appearance { color: color-mix(in srgb, var(--primary) 74%, #111827); filter: saturate(.82) brightness(.96); }
+    .icon-style-glass .icon-appearance { color: color-mix(in srgb, var(--primary) 82%, #fff); text-shadow: 0 1px 0 rgba(255,255,255,.35), 0 0 10px color-mix(in srgb, var(--primary) 34%, transparent); }
+    .icon-style-neon .icon-appearance { color: #fff; text-shadow: 0 0 7px color-mix(in srgb, var(--primary) 55%, transparent), 0 0 16px color-mix(in srgb, var(--primary) 85%, transparent); }
 
     .icon-picker-search {
       margin-bottom: 12px;
@@ -474,7 +479,7 @@
               <div class="icon-input-row">
                 <input id="catIcon" type="hidden">
                 <button class="btn btn-light" type="button" onclick="openIconPickerModal('catIcon')">Escolher ícone</button>
-                <div class="icon-preview" id="catIconPreview"><i class="fas fa-folder"></i></div>
+                <div class="icon-preview" id="catIconPreview"><i class="fas fa-folder icon-appearance"></i></div>
               </div>
             </div>
             <div class="field">
@@ -507,7 +512,7 @@
               <div class="icon-input-row">
                 <input id="subIcon" type="hidden">
                 <button class="btn btn-light" type="button" onclick="openIconPickerModal('subIcon')">Escolher ícone</button>
-                <div class="icon-preview" id="subIconPreview"><i class="fas fa-link"></i></div>
+                <div class="icon-preview" id="subIconPreview"><i class="fas fa-link icon-appearance"></i></div>
               </div>
             </div>
             <div class="btn-row">
@@ -562,6 +567,16 @@
                 <button class="btn btn-light" type="button" onclick="openColorPickerModal('primaryColorInput')">Escolher cor</button>
                 <div class="color-preview" id="primaryColorPreview"></div>
               </div>
+            </div>
+            <div class="field">
+              <label>Estilo visual dos ícones</label>
+              <select id="iconStyleInput">
+                <option value="solid">Sólido</option>
+                <option value="gradient">Gradiente</option>
+                <option value="matte">Fosco</option>
+                <option value="glass">Vidro</option>
+                <option value="neon">Neon premium</option>
+              </select>
             </div>
             <div class="btn-row">
               <button class="btn btn-primary" id="saveAllBtn" onclick="saveAllAdmin()">Salvar tudo</button>
@@ -647,7 +662,31 @@
     let currentTask = 'categoria';
     const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
     const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#65a30d', '#eab308', '#f97316', '#dc2626', '#be123c', '#db2777', '#9333ea', '#7c3aed', '#6d28d9', '#4f46e5', '#0ea5e9', '#06b6d4', '#0f766e', '#22c55e', '#84cc16', '#f59e0b', '#ef4444', '#111827', '#334155', '#475569'];
-    const iconPalette = ['fa-folder', 'fa-folder-open', 'fa-link', 'fa-chart-line', 'fa-chart-column', 'fa-users', 'fa-user-gear', 'fa-gear', 'fa-cogs', 'fa-building', 'fa-landmark', 'fa-briefcase', 'fa-file', 'fa-file-lines', 'fa-file-excel', 'fa-file-word', 'fa-file-pdf', 'fa-database', 'fa-table', 'fa-calendar-days', 'fa-envelope', 'fa-bell', 'fa-book', 'fa-circle-info', 'fa-screwdriver-wrench', 'fa-shield-halved', 'fa-wallet', 'fa-handshake', 'fa-truck', 'fa-headset', 'fa-music', 'fa-microphone-lines', 'fa-heart', 'fa-star', 'fa-gem', 'fa-wand-magic-sparkles', 'fa-headphones-simple'];
+    const iconPalette = [
+      'fa-folder','fa-folder-open','fa-file','fa-file-lines','fa-file-excel','fa-file-word','fa-file-pdf','fa-file-invoice','fa-file-signature','fa-file-circle-check',
+      'fa-link','fa-globe','fa-globe-americas','fa-sitemap','fa-network-wired','fa-diagram-project','fa-share-nodes','fa-route','fa-location-dot','fa-map-location-dot',
+      'fa-chart-line','fa-chart-column','fa-chart-pie','fa-chart-area','fa-chart-gantt','fa-signal','fa-ranking-star','fa-arrow-trend-up','fa-arrow-trend-down','fa-bullseye',
+      'fa-users','fa-user-group','fa-user-gear','fa-user-tie','fa-user-shield','fa-user-check','fa-user-clock','fa-id-card','fa-address-book','fa-handshake',
+      'fa-gear','fa-cogs','fa-sliders','fa-screwdriver-wrench','fa-toolbox','fa-wrench','fa-hammer','fa-microchip','fa-server','fa-terminal',
+      'fa-building','fa-building-columns','fa-landmark','fa-briefcase','fa-scale-balanced','fa-gavel','fa-shield-halved','fa-fingerprint','fa-lock','fa-key',
+      'fa-database','fa-table','fa-list-check','fa-list-ul','fa-filter','fa-magnifying-glass','fa-binoculars','fa-clipboard-list','fa-clipboard-check','fa-tags',
+      'fa-calendar-days','fa-calendar-check','fa-clock','fa-stopwatch','fa-hourglass-half','fa-bell','fa-envelope','fa-inbox','fa-paper-plane','fa-comment-dots',
+      'fa-wallet','fa-sack-dollar','fa-coins','fa-cash-register','fa-receipt','fa-credit-card','fa-piggy-bank','fa-money-bill-transfer','fa-money-check-dollar','fa-percent',
+      'fa-truck','fa-box','fa-boxes-stacked','fa-warehouse','fa-dolly','fa-road','fa-gas-pump','fa-train','fa-plane','fa-ship',
+      'fa-book','fa-book-open','fa-graduation-cap','fa-school','fa-chalkboard-user','fa-lightbulb','fa-flask','fa-atom','fa-brain','fa-medal',
+      'fa-heart','fa-heart-pulse','fa-notes-medical','fa-hospital','fa-stethoscope','fa-kit-medical','fa-syringe','fa-pills','fa-lungs','fa-user-doctor',
+      'fa-cloud','fa-cloud-arrow-up','fa-cloud-arrow-down','fa-wifi','fa-broadcast-tower','fa-satellite-dish','fa-mobile-screen','fa-laptop','fa-desktop','fa-tablet-screen-button',
+      'fa-camera','fa-image','fa-photo-film','fa-video','fa-music','fa-microphone-lines','fa-headphones-simple','fa-podcast','fa-radio','fa-tv',
+      'fa-star','fa-gem','fa-crown','fa-award','fa-trophy','fa-fire','fa-bolt','fa-wand-magic-sparkles','fa-palette','fa-brush',
+      'fa-seedling','fa-leaf','fa-tree','fa-mountain','fa-water','fa-sun','fa-moon','fa-snowflake','fa-wind','fa-earth-americas',
+      'fa-circle-check','fa-circle-info','fa-circle-question','fa-circle-exclamation','fa-triangle-exclamation','fa-ban','fa-bug','fa-shield-virus','fa-life-ring','fa-kit-medical',
+      'fa-robot','fa-code','fa-code-branch','fa-cube','fa-cubes','fa-layer-group','fa-puzzle-piece','fa-keyboard','fa-anchor','fa-compass',
+      'fa-map','fa-map-pin','fa-flag','fa-crosshairs','fa-rocket','fa-paperclip','fa-pen','fa-pen-to-square','fa-marker','fa-highlighter',
+      'fa-stamp','fa-scroll','fa-bookmark','fa-thumbtack','fa-qrcode','fa-barcode','fa-shop','fa-store','fa-cart-shopping','fa-basket-shopping',
+      'fa-tag','fa-gift','fa-bag-shopping','fa-helmet-safety','fa-industry','fa-language','fa-passport','fa-plane-departure','fa-hotel','fa-bed',
+      'fa-utensils','fa-mug-hot','fa-house','fa-house-medical','fa-door-open','fa-soap','fa-shower','fa-recycle','fa-battery-full','fa-plug',
+      'fa-solar-panel','fa-face-smile','fa-face-grin-stars','fa-face-laugh','fa-face-meh','fa-face-frown','fa-thumbs-up','fa-thumbs-down','fa-hand-holding-heart','fa-hands-clapping'
+    ];
     let colorTargetInputId = null;
     let iconTargetInputId = null;
     let selectedModalIcon = 'fa-folder';
@@ -713,6 +752,9 @@
       const appName = String(currentConfig.appName || 'Portal Nugesp').trim() || 'Portal Nugesp';
       document.title = appName;
       document.getElementById('portalLogo').textContent = appName.toUpperCase();
+      document.body.classList.remove('icon-style-solid','icon-style-gradient','icon-style-matte','icon-style-glass','icon-style-neon');
+      const iconStyle = String(currentConfig.iconStyle || 'solid').trim();
+      document.body.classList.add(`icon-style-${iconStyle}`);
     }
 
     function normalizeTheme(theme) {
@@ -815,7 +857,7 @@
       (currentConfig.categories || []).forEach(cat => {
         const div = document.createElement('div');
         div.className = 'sidebar-item' + (cat.id === currentCategoryId ? ' active' : '');
-        div.innerHTML = `<i class="fas ${resolveThemeIcon(cat.icon)}"></i><span>${cat.name}</span>`;
+        div.innerHTML = `<i class="fas ${resolveThemeIcon(cat.icon)} icon-appearance"></i><span>${cat.name}</span>`;
         div.onclick = () => loadCategory(cat.id);
         sb.appendChild(div);
       });
@@ -834,7 +876,7 @@
         html += `
           <details class="accordion">
             <summary>
-              <i class="fas ${resolveThemeIcon(sub.icon)}"></i>
+              <i class="fas ${resolveThemeIcon(sub.icon)} icon-appearance"></i>
               <span>${sub.title}</span>
               <i class="fas fa-chevron-down chevron"></i>
             </summary>
@@ -848,7 +890,7 @@
             const icon = resolveThemeIcon(iconRaw);
             html += `
               <div class="item" onclick="openDashboardItem('${item.type}','${item.url || ''}','${item.folderId || ''}','${item.name || ''}')">
-                <i class="fas ${icon}"></i>
+                <i class="fas ${icon} icon-appearance"></i>
                 <div style="flex:1;">
                   <div style="font-weight:600;">${item.name}</div>
                   ${item.desc ? `<div class="muted">${item.desc}</div>` : ''}
@@ -924,6 +966,7 @@
 
       document.getElementById('appNameInput').value = adminDraft.appName || '';
       document.getElementById('primaryColorInput').value = adminDraft.primaryColor || '';
+      document.getElementById('iconStyleInput').value = adminDraft.iconStyle || 'solid';
       syncColorPreview('catColor', 'catColorPreview');
       syncColorPreview('primaryColorInput', 'primaryColorPreview');
 
@@ -1112,7 +1155,7 @@
 
     function syncIconPreview(inputId, previewId) {
       const iconName = String(document.getElementById(inputId).value || '').trim() || 'fa-circle-question';
-      document.getElementById(previewId).innerHTML = `<i class="fas ${resolveThemeIcon(iconName)}"></i>`;
+      document.getElementById(previewId).innerHTML = `<i class="fas ${resolveThemeIcon(iconName)} icon-appearance"></i>`;
     }
 
     function openIconPickerModal(targetInputId) {
@@ -1137,7 +1180,7 @@
           class="icon-swatch ${icon === selectedModalIcon ? 'active' : ''}"
           onclick="selectModalIcon('${icon}')"
           title="${icon}">
-          <i class="fas ${resolveThemeIcon(icon)}"></i>
+          <i class="fas ${resolveThemeIcon(icon)} icon-appearance"></i>
         </button>
       `).join('');
     }
@@ -1355,6 +1398,7 @@
 
       adminDraft.appName = document.getElementById('appNameInput').value.trim();
       adminDraft.primaryColor = document.getElementById('primaryColorInput').value.trim();
+      adminDraft.iconStyle = document.getElementById('iconStyleInput').value;
 
       isSavingAllAdmin = true;
       setSaveAllLoading(true);
