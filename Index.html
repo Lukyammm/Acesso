@@ -11,20 +11,20 @@
 
     :root {
       --font-system: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      --primary: #5b5af7;
-      --primary-dark: #4847da;
-      --bg-page: #f3f5ff;
-      --bg-strong: #111827;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg-page: #edf2fb;
+      --bg-strong: #0b1424;
       --text-primary: #0f172a;
       --text-secondary: #475569;
-      --stroke: #d7dff0;
+      --stroke: #cfd9ee;
       --surface: #ffffff;
-      --surface-muted: #f7f9ff;
+      --surface-muted: #f3f7ff;
       --sidebar-text: #e2e8f0;
       --sidebar-header: #94a3b8;
-      --hover-soft: #e8edff;
-      --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.07);
-      --shadow-card: 0 4px 14px rgba(15, 23, 42, 0.06);
+      --hover-soft: #e3ecff;
+      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --shadow-card: 0 10px 22px rgba(15, 23, 42, 0.06);
       --item-bg: #ffffff;
       --button-light-bg: #f8fafc;
       --button-light-text: #1e293b;
@@ -94,7 +94,7 @@
       padding: 0 28px;
       z-index: 100;
     }
-    .logo { font-size: 1.2rem; font-weight: 700; }
+    .logo { font-size: 1.2rem; font-weight: 800; letter-spacing: .02em; }
     .tabs { display: flex; gap: 8px; margin-left: 28px; }
     .tab {
       border-radius: 8px; padding: 10px 18px; font-weight: 600; cursor: pointer;
@@ -142,7 +142,7 @@
       display: flex; gap: 12px; align-items: center; cursor: pointer;
       transition: .2s;
     }
-    .sidebar-item:hover, .sidebar-item.active { background: color-mix(in srgb, var(--primary) 16%, transparent); color: #fff; }
+    .sidebar-item:hover, .sidebar-item.active { background: color-mix(in srgb, var(--primary) 22%, transparent); color: #fff; }
 
     .main { margin-left: 284px; padding: 94px 30px 26px; }
     .hidden { display: none; }
@@ -195,10 +195,16 @@
       display: flex; align-items: center; gap: 12px;
       border: 1px solid var(--stroke);
       background: var(--item-bg);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 14px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       cursor: pointer;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .item:hover {
+      border-color: color-mix(in srgb, var(--primary) 32%, var(--stroke));
+      box-shadow: var(--shadow-card);
+      transform: translateY(-1px);
     }
 
     .panel {
@@ -307,6 +313,20 @@
       align-items: center;
     }
 
+    .icon-chip {
+      width: 38px;
+      min-width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--stroke));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+      color: var(--primary);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+    }
+
     .icon-preview {
       width: 44px;
       min-width: 44px;
@@ -320,6 +340,7 @@
       background: var(--surface-muted);
     }
     .icon-appearance { color: var(--primary); -webkit-text-fill-color: currentColor; }
+    .sidebar-item .icon-appearance, .accordion summary .icon-appearance, .item .icon-appearance { font-size: 1.05rem; }
     .icon-style-gradient .icon-appearance { background: linear-gradient(135deg, var(--primary), #06b6d4 45%, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
     .icon-style-matte .icon-appearance { color: color-mix(in srgb, var(--primary) 74%, #111827); filter: saturate(.82) brightness(.96); }
     .icon-style-glass .icon-appearance { color: color-mix(in srgb, var(--primary) 82%, #fff); text-shadow: 0 1px 0 rgba(255,255,255,.35), 0 0 10px color-mix(in srgb, var(--primary) 34%, transparent); }
@@ -751,7 +772,7 @@
         currentConfig = data.config;
         adminDraft = JSON.parse(JSON.stringify(data.config));
 
-        document.getElementById('user').innerHTML = `👤 ${data.email || 'Usuário'}`;
+        document.getElementById('user').innerHTML = `<span class="icon-chip"><i class="fas fa-user-shield"></i></span> ${data.email || 'Usuário'}`;
         if (!isAdmin) {
           document.getElementById('adminTab').style.display = 'none';
         }
@@ -905,7 +926,7 @@
       (currentConfig.categories || []).forEach(cat => {
         const div = document.createElement('div');
         div.className = 'sidebar-item' + (cat.id === currentCategoryId ? ' active' : '');
-        div.innerHTML = `<i class="fas ${resolveThemeIcon(cat.icon)} icon-appearance"></i><span>${cat.name}</span>`;
+        div.innerHTML = `<span class="icon-chip"><i class="fas ${resolveThemeIcon(cat.icon)} icon-appearance"></i></span><span>${cat.name}</span>`;
         div.onclick = () => loadCategory(cat.id);
         sb.appendChild(div);
       });
@@ -935,7 +956,7 @@
         html += `
           <details class="accordion">
             <summary>
-              <i class="fas ${resolveThemeIcon(sub.icon)} icon-appearance"></i>
+              <span class="icon-chip"><i class="fas ${resolveThemeIcon(sub.icon)} icon-appearance"></i></span>
               <span>${sub.title}</span>
               <i class="fas fa-chevron-down chevron"></i>
             </summary>
@@ -949,7 +970,7 @@
             const icon = resolveThemeIcon(iconRaw);
             html += `
               <div class="item" onclick="openDashboardItem('${item.type}','${item.url || ''}','${item.folderId || ''}','${item.name || ''}')">
-                <i class="fas ${icon} icon-appearance"></i>
+                <span class="icon-chip"><i class="fas ${icon} icon-appearance"></i></span>
                 <div style="flex:1;">
                   <div style="font-weight:600;">${item.name}</div>
                   ${item.desc ? `<div class="muted">${item.desc}</div>` : ''}
