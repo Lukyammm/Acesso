@@ -405,6 +405,27 @@
       max-width: 130px;
     }
 
+
+    .dashboard-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .search-wrap { position: relative; }
+    .search-wrap i { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-secondary); }
+    .search-input {
+      width:100%; border:1px solid var(--stroke); border-radius:10px; background:var(--surface);
+      color:var(--text-primary); padding:11px 12px 11px 36px; font-size:.95rem;
+    }
+    .chip-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .chip {
+      border:1px solid var(--stroke); border-radius:999px; background:var(--surface); color:var(--text-secondary);
+      padding:8px 12px; font-size:.82rem; cursor:pointer;
+    }
+    .chip.active { background: color-mix(in srgb, var(--primary) 15%, var(--surface)); color: var(--text-primary); border-color: color-mix(in srgb, var(--primary) 35%, var(--stroke)); }
+    .item-badge { font-size:.72rem; padding:3px 8px; border-radius:999px; border:1px solid var(--stroke); color:var(--text-secondary); }
+
     .modal { display:none; position: fixed; inset:0; background: rgba(10,14,27,.55); align-items:center; justify-content:center; z-index: 400; }
     .modal-content {
       width: 90%; max-width: 680px; max-height: 86vh;
@@ -454,6 +475,19 @@
       <div class="stat-card"><div class="stat-label">Categorias</div><div class="stat-value" id="statCategories">0</div></div>
       <div class="stat-card"><div class="stat-label">Seções</div><div class="stat-value" id="statSubtopics">0</div></div>
       <div class="stat-card"><div class="stat-label">Itens</div><div class="stat-value" id="statItems">0</div></div>
+    </div>
+
+    <div class="dashboard-toolbar">
+      <div class="search-wrap">
+        <i class="fas fa-magnifying-glass"></i>
+        <input id="dashboardSearch" class="search-input" type="text" placeholder="Buscar por seção, item ou descrição..." oninput="applyDashboardFilters()">
+      </div>
+      <div class="chip-row">
+        <button class="chip active" id="chip-all" onclick="setDashboardFilter('all')">Todos</button>
+        <button class="chip" id="chip-link" onclick="setDashboardFilter('link')">Links</button>
+        <button class="chip" id="chip-sheet" onclick="setDashboardFilter('sheet')">Planilhas</button>
+        <button class="chip" id="chip-folder" onclick="setDashboardFilter('folder')">Pastas</button>
+      </div>
     </div>
 
     <div id="dashboardContent"></div>
@@ -655,6 +689,7 @@
     let adminDraft = null;
     let currentCategoryId = null;
     let isAdmin = false;
+    let dashboardFilterType = 'all';
 
     let selectedCategoryId = null;
     let selectedSubtopicId = null;
@@ -734,6 +769,19 @@
       document.getElementById('statCategories').textContent = categories.length;
       document.getElementById('statSubtopics').textContent = subtopics;
       document.getElementById('statItems').textContent = items;
+    }
+
+    function setDashboardFilter(type) {
+      dashboardFilterType = type || 'all';
+      ['all','link','sheet','folder'].forEach(t => {
+        const el = document.getElementById(`chip-${t}`);
+        if (el) el.classList.toggle('active', t === dashboardFilterType);
+      });
+      applyDashboardFilters();
+    }
+
+    function applyDashboardFilters() {
+      if (currentCategoryId) loadCategory(currentCategoryId);
     }
 
     function loadDashboard() {
@@ -871,8 +919,19 @@
 
       document.getElementById('categoryTitle').innerHTML = `<span style="color:${cat.color}">${cat.name}</span>`;
 
+      const term = String(document.getElementById('dashboardSearch')?.value || '').trim().toLowerCase();
       let html = '';
+      let hasVisibleContent = false;
       (cat.subtopics || []).forEach(sub => {
+        const filteredItems = (sub.items || []).filter(item => {
+          const matchType = dashboardFilterType === 'all' || item.type === dashboardFilterType;
+          const blob = `${sub.title} ${item.name || ''} ${item.desc || ''}`.toLowerCase();
+          const matchSearch = !term || blob.includes(term);
+          return matchType && matchSearch;
+        });
+
+        if (!filteredItems.length && (term || dashboardFilterType !== 'all')) return;
+        hasVisibleContent = true;
         html += `
           <details class="accordion">
             <summary>
@@ -882,10 +941,10 @@
             </summary>
             <div class="items-container">`;
 
-        if (!sub.items || sub.items.length === 0) {
+        if (!filteredItems.length) {
           html += `<p class="muted" style="padding:20px;text-align:center;">Nenhum item ainda.</p>`;
         } else {
-          sub.items.forEach(item => {
+          filteredItems.forEach(item => {
             const iconRaw = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'fa-link';
             const icon = resolveThemeIcon(iconRaw);
             html += `
@@ -894,6 +953,7 @@
                 <div style="flex:1;">
                   <div style="font-weight:600;">${item.name}</div>
                   ${item.desc ? `<div class="muted">${item.desc}</div>` : ''}
+                  <span class="item-badge">${item.type === 'folder' ? 'Pasta' : item.type === 'sheet' ? 'Planilha' : 'Link'}</span>
                 </div>
                 ${item.type === 'folder'
                   ? `<button class="btn btn-primary" onclick="event.stopPropagation(); openDashboardItem('${item.type}','${item.url || ''}','${item.folderId || ''}','${item.name || ''}')">Ver pasta</button>`
@@ -906,6 +966,9 @@
         html += '</div></details>';
       });
 
+      if (!hasVisibleContent) {
+        html = '<div class="panel"><p class="muted">Nenhum resultado para o filtro atual. Tente limpar a busca ou trocar o tipo.</p></div>';
+      }
       document.getElementById('dashboardContent').innerHTML = html;
     }
 
