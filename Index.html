@@ -366,7 +366,8 @@
       margin-bottom: 12px;
     }
 
-    .icon-picker-section { margin-bottom: 14px; }
+    .icon-picker-groups { display: flex; flex-direction: column; gap: 14px; max-height: 320px; overflow: auto; padding-right: 4px; }
+    .icon-picker-section { margin-bottom: 0; }
     .icon-picker-section-title {
       font-size: .78rem;
       letter-spacing: .08em;
@@ -737,7 +738,7 @@
           <label>Pesquisar ícone</label>
           <input id="iconSearchInput" type="text" placeholder="Ex.: folder, chart, users" oninput="handleIconSearchChange()">
         </div>
-        <div class="icon-picker-grid" id="iconPickerGrid"></div>
+        <div class="icon-picker-groups" id="iconPickerGrid"></div>
         <p class="muted" id="iconPickerEmpty" style="display:none;margin-top:10px;">Nenhum ícone encontrado para este filtro.</p>
         <div class="btn-row">
           <button class="btn btn-primary" type="button" onclick="applyIconFromModal()">Aplicar</button>
