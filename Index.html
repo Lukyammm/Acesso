@@ -366,6 +366,16 @@
       margin-bottom: 12px;
     }
 
+    .icon-picker-groups { display: flex; flex-direction: column; gap: 14px; max-height: 320px; overflow: auto; padding-right: 4px; }
+    .icon-picker-section { margin-bottom: 0; }
+    .icon-picker-section-title {
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
     .icon-picker-grid {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -728,7 +738,7 @@
           <label>Pesquisar ícone</label>
           <input id="iconSearchInput" type="text" placeholder="Ex.: folder, chart, users" oninput="handleIconSearchChange()">
         </div>
-        <div class="icon-picker-grid" id="iconPickerGrid"></div>
+        <div class="icon-picker-groups" id="iconPickerGrid"></div>
         <p class="muted" id="iconPickerEmpty" style="display:none;margin-top:10px;">Nenhum ícone encontrado para este filtro.</p>
         <div class="btn-row">
           <button class="btn btn-primary" type="button" onclick="applyIconFromModal()">Aplicar</button>
@@ -751,14 +761,16 @@
     let currentTask = 'categoria';
     const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
     const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#65a30d', '#eab308', '#f97316', '#dc2626', '#be123c', '#db2777', '#9333ea', '#7c3aed', '#6d28d9', '#4f46e5', '#0ea5e9', '#06b6d4', '#0f766e', '#22c55e', '#84cc16', '#f59e0b', '#ef4444', '#111827', '#334155', '#475569'];
-    const iconPalette = [
-      'folder','folder-open','file','file-text','file-spreadsheet','link','globe','network','map','chart-line',
-      'bar-chart-3','pie-chart','users','user-cog','settings','sliders-horizontal','wrench','building-2','landmark','briefcase',
-      'database','table','list-checks','filter','search','calendar-days','clock-3','bell','mail','wallet',
-      'coins','receipt','credit-card','truck','boxes','warehouse','book-open','graduation-cap','heart-pulse','hospital',
-      'stethoscope','cloud','wifi','monitor','camera','image','mic','star','award','shield-check',
-      'shield-alert','info','alert-triangle','bug','code-2','cpu','compass','flag','rocket','home'
-    ];    let colorTargetInputId = null;
+    const iconPaletteByCategory = {
+      'Navegação e arquivos': ['folder','folder-open','file','file-text','file-spreadsheet','link','globe','network','map','home','compass','flag'],
+      'Gestão e administração': ['users','user-cog','settings','sliders-horizontal','wrench','building-2','landmark','briefcase','database','table','list-checks','filter'],
+      'Relatórios e finanças': ['chart-line','bar-chart-3','pie-chart','search','calendar-days','clock-3','wallet','coins','receipt','credit-card','target','trending-up'],
+      'Operações e suporte': ['truck','boxes','warehouse','book-open','graduation-cap','mail','bell','clipboard-list','check-circle-2','archive','inbox','files'],
+      'Saúde e monitoramento': ['heart-pulse','hospital','stethoscope','activity','heart','syringe','pill','shield-check','shield-alert','alert-triangle','info','cross'],
+      'Tecnologia e mídia': ['cloud','wifi','monitor','camera','image','mic','code-2','cpu','terminal','server','smartphone','rocket']
+    };
+    const iconPalette = Object.values(iconPaletteByCategory).flat();
+    let colorTargetInputId = null;
     let iconTargetInputId = null;
     let selectedModalIcon = 'folder';
     const THEME_KEY = 'portal_nugesp_theme';
@@ -1246,19 +1258,32 @@
 
     function renderIconPalette() {
       const query = String(document.getElementById('iconSearchInput').value || '').trim().toLowerCase();
-      const options = iconPalette.filter(icon => icon.toLowerCase().includes(query));
+      const groupedOptions = Object.entries(iconPaletteByCategory)
+        .map(([category, icons]) => ({
+          category,
+          icons: icons.filter(icon => icon.toLowerCase().includes(query))
+        }))
+        .filter(group => group.icons.length);
+      const totalOptions = groupedOptions.reduce((sum, group) => sum + group.icons.length, 0);
       const grid = document.getElementById('iconPickerGrid');
       const empty = document.getElementById('iconPickerEmpty');
 
-      empty.style.display = options.length ? 'none' : 'block';
-      grid.innerHTML = options.map(icon => `
-        <button
-          type="button"
-          class="icon-swatch ${icon === selectedModalIcon ? 'active' : ''}"
-          onclick="selectModalIcon('${icon}')"
-          title="${icon}">
-          ${iconMarkup(icon)}
-        </button>
+      empty.style.display = totalOptions ? 'none' : 'block';
+      grid.innerHTML = groupedOptions.map(group => `
+        <div class="icon-picker-section">
+          <p class="icon-picker-section-title">${group.category}</p>
+          <div class="icon-picker-grid">
+            ${group.icons.map(icon => `
+              <button
+                type="button"
+                class="icon-swatch ${icon === selectedModalIcon ? 'active' : ''}"
+                onclick="selectModalIcon('${icon}')"
+                title="${icon}">
+                ${iconMarkup(icon)}
+              </button>
+            `).join('')}
+          </div>
+        </div>
       `).join('');
       refreshIcons();
     }
