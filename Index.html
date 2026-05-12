@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Nugesp</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%231f3f6b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M32 14 49 22v11c0 12-8.2 18.8-17 22-8.8-3.2-17-10-17-22V22l17-8z' fill='white' fill-opacity='.96'/%3E%3Cpath d='M32 24c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7zm0 18c5.8 0 10.8 2.7 14 6.8C42.1 52.3 37.4 54.2 32 56c-5.4-1.8-10.1-3.7-14-7.2C21.2 44.7 26.2 42 32 42z' fill='%231f3f6b'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -146,11 +146,11 @@
       font-weight: 600; padding: 0 18px 14px;
     }
     .sidebar-item {
-      margin: 0 8px 8px; padding: 14px 14px; border-radius: 12px;
+      margin: 0 8px 8px; padding: 12px 14px; border-radius: 10px;
       display: flex; gap: 12px; align-items: center; cursor: pointer;
       transition: .2s;
     }
-    .sidebar-item:hover, .sidebar-item.active { background: color-mix(in srgb, var(--primary) 22%, transparent); color: #fff; }
+    .sidebar-item:hover, .sidebar-item.active { background: color-mix(in srgb, #ffffff 6%, transparent); color: #fff; }
 
     .main { margin-left: 284px; padding: 94px 30px 26px; max-width: calc(100vw - 284px); }
     .hidden { display: none; }
@@ -338,17 +338,13 @@
     }
 
     .icon-chip {
-      width: 38px;
-      min-width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--stroke));
+      width: 22px;
+      min-width: 22px;
+      height: 22px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: color-mix(in srgb, var(--primary) 12%, var(--surface));
-      color: var(--primary);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+      color: currentColor;
     }
 
     .icon-preview {
@@ -363,12 +359,8 @@
       color: var(--text-primary);
       background: var(--surface-muted);
     }
-    .icon-appearance { color: var(--primary); -webkit-text-fill-color: currentColor; }
-    .sidebar-item .icon-appearance, .accordion summary .icon-appearance, .item .icon-appearance { font-size: 1.05rem; }
-    .icon-style-gradient .icon-appearance { background: linear-gradient(135deg, var(--primary), #06b6d4 45%, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-    .icon-style-matte .icon-appearance { color: color-mix(in srgb, var(--primary) 74%, #111827); filter: saturate(.82) brightness(.96); }
-    .icon-style-glass .icon-appearance { color: color-mix(in srgb, var(--primary) 82%, #fff); text-shadow: 0 1px 0 rgba(255,255,255,.35), 0 0 10px color-mix(in srgb, var(--primary) 34%, transparent); }
-    .icon-style-neon .icon-appearance { color: #fff; text-shadow: 0 0 7px color-mix(in srgb, var(--primary) 55%, transparent), 0 0 16px color-mix(in srgb, var(--primary) 85%, transparent); }
+    .icon-appearance { color: currentColor; width: 18px; height: 18px; stroke-width: 2; }
+    .sidebar-item .icon-appearance, .accordion summary .icon-appearance, .item .icon-appearance { width: 18px; height: 18px; }
 
     .icon-picker-search {
       margin-bottom: 12px;
@@ -519,7 +511,7 @@
     </div>
     <div class="topbar-actions">
       <button class="theme-switcher" id="themeSwitcher" type="button" data-active-theme="light" aria-label="Alternar tema" title="Alternar tema" onclick="cycleTheme()">
-        <i class="fas fa-sun" id="themeSwitcherIcon"></i>
+        <i data-lucide="sun" id="themeSwitcherIcon" class="icon-appearance"></i>
       </button>
       <div class="user" id="user">Carregando...</div>
     </div>
@@ -541,7 +533,7 @@
 
     <div class="dashboard-toolbar">
       <div class="search-wrap">
-        <i class="fas fa-magnifying-glass"></i>
+        <i data-lucide="search" class="icon-appearance"></i>
         <input id="dashboardSearch" class="search-input" type="text" placeholder="Buscar por seção, item ou descrição..." oninput="applyDashboardFilters()">
       </div>
       <div class="chip-row">
@@ -571,11 +563,11 @@
           <div>
             <div class="field field-primary"><label>Nome da categoria</label><input id="catName" type="text"></div>
             <div class="field">
-              <label>Ícone (FontAwesome)</label>
+              <label>Ícone (Lucide)</label>
               <div class="icon-input-row">
                 <input id="catIcon" type="hidden">
                 <button class="btn btn-light" type="button" onclick="openIconPickerModal('catIcon')">Escolher ícone</button>
-                <div class="icon-preview" id="catIconPreview"><i class="fas fa-folder icon-appearance"></i></div>
+                <div class="icon-preview" id="catIconPreview"><i data-lucide="folder" class="icon-appearance"></i></div>
               </div>
             </div>
             <div class="field">
@@ -604,11 +596,11 @@
           <div>
             <div class="field"><label>Título da seção</label><input id="subTitle" type="text"></div>
             <div class="field">
-              <label>Ícone (FontAwesome)</label>
+              <label>Ícone (Lucide)</label>
               <div class="icon-input-row">
                 <input id="subIcon" type="hidden">
                 <button class="btn btn-light" type="button" onclick="openIconPickerModal('subIcon')">Escolher ícone</button>
-                <div class="icon-preview" id="subIconPreview"><i class="fas fa-link icon-appearance"></i></div>
+                <div class="icon-preview" id="subIconPreview"><i data-lucide="link" class="icon-appearance"></i></div>
               </div>
             </div>
             <div class="btn-row">
@@ -728,7 +720,7 @@
   <div class="modal" id="iconPickerModal">
     <div class="modal-content" style="max-width: 620px;">
       <div class="modal-header">
-        <h3>Escolher ícone (FontAwesome)</h3>
+        <h3>Escolher ícone (Lucide)</h3>
         <button class="close-btn" onclick="closeIconPickerModal()">×</button>
       </div>
       <div class="modal-body">
@@ -760,33 +752,15 @@
     const adminSteps = ['categoria', 'secao', 'item', 'publicar'];
     const colorPalette = ['#1e40af', '#2563eb', '#0f766e', '#16a34a', '#65a30d', '#eab308', '#f97316', '#dc2626', '#be123c', '#db2777', '#9333ea', '#7c3aed', '#6d28d9', '#4f46e5', '#0ea5e9', '#06b6d4', '#0f766e', '#22c55e', '#84cc16', '#f59e0b', '#ef4444', '#111827', '#334155', '#475569'];
     const iconPalette = [
-      'fa-folder','fa-folder-open','fa-file','fa-file-lines','fa-file-excel','fa-file-word','fa-file-pdf','fa-file-invoice','fa-file-signature','fa-file-circle-check',
-      'fa-link','fa-globe','fa-globe-americas','fa-sitemap','fa-network-wired','fa-diagram-project','fa-share-nodes','fa-route','fa-location-dot','fa-map-location-dot',
-      'fa-chart-line','fa-chart-column','fa-chart-pie','fa-chart-area','fa-chart-gantt','fa-signal','fa-ranking-star','fa-arrow-trend-up','fa-arrow-trend-down','fa-bullseye',
-      'fa-users','fa-user-group','fa-user-gear','fa-user-tie','fa-user-shield','fa-user-check','fa-user-clock','fa-id-card','fa-address-book','fa-handshake',
-      'fa-gear','fa-cogs','fa-sliders','fa-screwdriver-wrench','fa-toolbox','fa-wrench','fa-hammer','fa-microchip','fa-server','fa-terminal',
-      'fa-building','fa-building-columns','fa-landmark','fa-briefcase','fa-scale-balanced','fa-gavel','fa-shield-halved','fa-fingerprint','fa-lock','fa-key',
-      'fa-database','fa-table','fa-list-check','fa-list-ul','fa-filter','fa-magnifying-glass','fa-binoculars','fa-clipboard-list','fa-clipboard-check','fa-tags',
-      'fa-calendar-days','fa-calendar-check','fa-clock','fa-stopwatch','fa-hourglass-half','fa-bell','fa-envelope','fa-inbox','fa-paper-plane','fa-comment-dots',
-      'fa-wallet','fa-sack-dollar','fa-coins','fa-cash-register','fa-receipt','fa-credit-card','fa-piggy-bank','fa-money-bill-transfer','fa-money-check-dollar','fa-percent',
-      'fa-truck','fa-box','fa-boxes-stacked','fa-warehouse','fa-dolly','fa-road','fa-gas-pump','fa-train','fa-plane','fa-ship',
-      'fa-book','fa-book-open','fa-graduation-cap','fa-school','fa-chalkboard-user','fa-lightbulb','fa-flask','fa-atom','fa-brain','fa-medal',
-      'fa-heart','fa-heart-pulse','fa-notes-medical','fa-hospital','fa-stethoscope','fa-kit-medical','fa-syringe','fa-pills','fa-lungs','fa-user-doctor',
-      'fa-cloud','fa-cloud-arrow-up','fa-cloud-arrow-down','fa-wifi','fa-broadcast-tower','fa-satellite-dish','fa-mobile-screen','fa-laptop','fa-desktop','fa-tablet-screen-button',
-      'fa-camera','fa-image','fa-photo-film','fa-video','fa-music','fa-microphone-lines','fa-headphones-simple','fa-podcast','fa-radio','fa-tv',
-      'fa-star','fa-gem','fa-crown','fa-award','fa-trophy','fa-fire','fa-bolt','fa-wand-magic-sparkles','fa-palette','fa-brush',
-      'fa-seedling','fa-leaf','fa-tree','fa-mountain','fa-water','fa-sun','fa-moon','fa-snowflake','fa-wind','fa-earth-americas',
-      'fa-circle-check','fa-circle-info','fa-circle-question','fa-circle-exclamation','fa-triangle-exclamation','fa-ban','fa-bug','fa-shield-virus','fa-life-ring','fa-kit-medical',
-      'fa-robot','fa-code','fa-code-branch','fa-cube','fa-cubes','fa-layer-group','fa-puzzle-piece','fa-keyboard','fa-anchor','fa-compass',
-      'fa-map','fa-map-pin','fa-flag','fa-crosshairs','fa-rocket','fa-paperclip','fa-pen','fa-pen-to-square','fa-marker','fa-highlighter',
-      'fa-stamp','fa-scroll','fa-bookmark','fa-thumbtack','fa-qrcode','fa-barcode','fa-shop','fa-store','fa-cart-shopping','fa-basket-shopping',
-      'fa-tag','fa-gift','fa-bag-shopping','fa-helmet-safety','fa-industry','fa-language','fa-passport','fa-plane-departure','fa-hotel','fa-bed',
-      'fa-utensils','fa-mug-hot','fa-house','fa-house-medical','fa-door-open','fa-soap','fa-shower','fa-recycle','fa-battery-full','fa-plug',
-      'fa-solar-panel','fa-face-smile','fa-face-grin-stars','fa-face-laugh','fa-face-meh','fa-face-frown','fa-thumbs-up','fa-thumbs-down','fa-hand-holding-heart','fa-hands-clapping'
-    ];
-    let colorTargetInputId = null;
+      'folder','folder-open','file','file-text','file-spreadsheet','link','globe','network','map','chart-line',
+      'bar-chart-3','pie-chart','users','user-cog','settings','sliders-horizontal','wrench','building-2','landmark','briefcase',
+      'database','table','list-checks','filter','search','calendar-days','clock-3','bell','mail','wallet',
+      'coins','receipt','credit-card','truck','boxes','warehouse','book-open','graduation-cap','heart-pulse','hospital',
+      'stethoscope','cloud','wifi','monitor','camera','image','mic','star','award','shield-check',
+      'shield-alert','info','alert-triangle','bug','code-2','cpu','compass','flag','rocket','home'
+    ];    let colorTargetInputId = null;
     let iconTargetInputId = null;
-    let selectedModalIcon = 'fa-folder';
+    let selectedModalIcon = 'folder';
     const THEME_KEY = 'portal_nugesp_theme';
     const DEFAULT_THEME = 'light';
     const THEME_ORDER = ['light', 'dark', 'army'];
@@ -813,7 +787,7 @@
         currentConfig = data.config;
         adminDraft = JSON.parse(JSON.stringify(data.config));
 
-        document.getElementById('user').innerHTML = `<span class="icon-chip"><i class="fas fa-user-shield"></i></span> ${data.email || 'Usuário'}`;
+        document.getElementById('user').innerHTML = `<span class="icon-chip">${iconMarkup('shield-check')}</span> ${data.email || 'Usuário'}`;
         if (!isAdmin) {
           document.getElementById('adminTab').style.display = 'none';
         }
@@ -872,9 +846,17 @@
     }
 
     function getThemeIcon(theme) {
-      if (theme === 'dark') return 'fa-moon';
-      if (theme === 'army') return 'fa-heart';
-      return 'fa-sun';
+      if (theme === 'dark') return 'moon';
+      if (theme === 'army') return 'heart';
+      return 'sun';
+    }
+
+    function iconMarkup(iconName, extraClass = 'icon-appearance') {
+      return `<i data-lucide="${resolveThemeIcon(iconName)}" class="${extraClass}"></i>`;
+    }
+
+    function refreshIcons() {
+      if (window.lucide) window.lucide.createIcons();
     }
 
     function getThemeLabel(theme) {
@@ -895,7 +877,8 @@
         switcher.title = `Tema ${label}. Clique para alternar`;
       }
       if (switcherIcon) {
-        switcherIcon.className = `fas ${getThemeIcon(safeTheme)}`;
+        switcherIcon.setAttribute('data-lucide', getThemeIcon(safeTheme));
+        refreshIcons();
       }
     }
 
@@ -922,43 +905,9 @@
     }
 
     function resolveThemeIcon(iconName) {
-      const icon = String(iconName || '').trim() || 'fa-circle-question';
-      if (document.body.dataset.theme !== 'army') return icon;
-
-      const armyMap = {
-        'fa-folder': 'fa-star',
-        'fa-folder-open': 'fa-heart',
-        'fa-link': 'fa-music',
-        'fa-chart-line': 'fa-microphone-lines',
-        'fa-chart-column': 'fa-gem',
-        'fa-users': 'fa-heart',
-        'fa-user-gear': 'fa-wand-magic-sparkles',
-        'fa-gear': 'fa-star',
-        'fa-cogs': 'fa-gem',
-        'fa-building': 'fa-headphones-simple',
-        'fa-landmark': 'fa-gem',
-        'fa-briefcase': 'fa-heart',
-        'fa-file': 'fa-star',
-        'fa-file-lines': 'fa-music',
-        'fa-file-excel': 'fa-microphone-lines',
-        'fa-file-word': 'fa-heart',
-        'fa-file-pdf': 'fa-gem',
-        'fa-database': 'fa-star',
-        'fa-table': 'fa-star',
-        'fa-calendar-days': 'fa-heart',
-        'fa-envelope': 'fa-heart',
-        'fa-bell': 'fa-star',
-        'fa-book': 'fa-gem',
-        'fa-circle-info': 'fa-wand-magic-sparkles',
-        'fa-screwdriver-wrench': 'fa-wand-magic-sparkles',
-        'fa-shield-halved': 'fa-gem',
-        'fa-wallet': 'fa-heart',
-        'fa-handshake': 'fa-heart',
-        'fa-truck': 'fa-star',
-        'fa-headset': 'fa-headphones-simple'
-      };
-
-      return armyMap[icon] || icon;
+      const icon = String(iconName || '').trim() || 'circle-help';
+      const legacyMap = { 'folder':'folder','fa-folder-open':'folder-open','fa-file':'file','fa-file-lines':'file-text','fa-file-excel':'file-spreadsheet','link':'link','fa-chart-line':'chart-line','fa-chart-column':'bar-chart-3','fa-users':'users','fa-user-gear':'user-cog','fa-gear':'settings','fa-cogs':'settings','fa-building':'building-2','fa-landmark':'landmark','fa-briefcase':'briefcase','fa-database':'database','fa-table':'table','fa-calendar-days':'calendar-days','fa-envelope':'mail','fa-bell':'bell','fa-heart':'heart','fa-magnifying-glass':'search','fa-sun':'sun','fa-moon':'moon','circle-help':'circle-help','fa-circle-info':'info','fa-triangle-exclamation':'alert-triangle' };
+      return legacyMap[icon] || icon;
     }
 
     function renderSidebar() {
@@ -967,10 +916,11 @@
       (currentConfig.categories || []).forEach(cat => {
         const div = document.createElement('div');
         div.className = 'sidebar-item' + (cat.id === currentCategoryId ? ' active' : '');
-        div.innerHTML = `<span class="icon-chip"><i class="fas ${resolveThemeIcon(cat.icon)} icon-appearance"></i></span><span>${cat.name}</span>`;
+        div.innerHTML = `<span class="icon-chip">${iconMarkup(cat.icon)}</span><span>${cat.name}</span>`;
         div.onclick = () => loadCategory(cat.id);
         sb.appendChild(div);
       });
+      refreshIcons();
     }
 
     function loadCategory(catId) {
@@ -997,9 +947,9 @@
         html += `
           <details class="accordion">
             <summary>
-              <span class="icon-chip"><i class="fas ${resolveThemeIcon(sub.icon)} icon-appearance"></i></span>
+              <span class="icon-chip">${iconMarkup(sub.icon)}</span>
               <span>${sub.title}</span>
-              <i class="fas fa-chevron-down chevron"></i>
+              <i data-lucide="chevron-down" class="chevron icon-appearance"></i>
             </summary>
             <div class="items-container">`;
 
@@ -1007,11 +957,11 @@
           html += `<p class="muted" style="padding:20px;text-align:center;">Nenhum item ainda.</p>`;
         } else {
           filteredItems.forEach(item => {
-            const iconRaw = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'fa-link';
+            const iconRaw = item.type === 'folder' ? 'fa-folder-open' : item.type === 'sheet' ? 'fa-file-excel' : 'link';
             const icon = resolveThemeIcon(iconRaw);
             html += `
               <div class="item" onclick="openDashboardItem('${item.type}','${item.url || ''}','${item.folderId || ''}','${item.name || ''}')">
-                <span class="icon-chip"><i class="fas ${icon} icon-appearance"></i></span>
+                <span class="icon-chip">${iconMarkup(icon)}</span>
                 <div style="flex:1;">
                   <div style="font-weight:600;">${item.name}</div>
                   ${item.desc ? `<div class="muted">${item.desc}</div>` : ''}
@@ -1032,6 +982,7 @@
         html = '<div class="panel"><p class="muted">Nenhum resultado para o filtro atual. Tente limpar a busca ou trocar o tipo.</p></div>';
       }
       document.getElementById('dashboardContent').innerHTML = html;
+      refreshIcons();
     }
 
     function openFolder(folderId, title) {
@@ -1198,7 +1149,7 @@
     function fillCategoryForm() {
       const cat = getSelectedCategory();
       document.getElementById('catName').value = cat ? cat.name : '';
-      document.getElementById('catIcon').value = cat ? cat.icon : 'fa-folder';
+      document.getElementById('catIcon').value = cat ? cat.icon : 'folder';
       document.getElementById('catColor').value = cat ? cat.color : '#1e40af';
       syncColorPreview('catColor', 'catColorPreview');
       syncIconPreview('catIcon', 'catIconPreview');
@@ -1236,6 +1187,7 @@
           title="${color}">
         </button>
       `).join('');
+      refreshIcons();
     }
 
     function selectColorSwatch(color) {
@@ -1274,19 +1226,19 @@
     function fillSubtopicForm() {
       const sub = getSelectedSubtopic();
       document.getElementById('subTitle').value = sub ? sub.title : '';
-      document.getElementById('subIcon').value = sub ? sub.icon : 'fa-link';
+      document.getElementById('subIcon').value = sub ? sub.icon : 'link';
       syncIconPreview('subIcon', 'subIconPreview');
     }
 
     function syncIconPreview(inputId, previewId) {
-      const iconName = String(document.getElementById(inputId).value || '').trim() || 'fa-circle-question';
-      document.getElementById(previewId).innerHTML = `<i class="fas ${resolveThemeIcon(iconName)} icon-appearance"></i>`;
+      const iconName = String(document.getElementById(inputId).value || '').trim() || 'circle-help';
+      document.getElementById(previewId).innerHTML = iconMarkup(iconName);
     }
 
     function openIconPickerModal(targetInputId) {
       iconTargetInputId = targetInputId;
       const currentIcon = String(document.getElementById(targetInputId).value || '').trim();
-      selectedModalIcon = currentIcon || 'fa-folder';
+      selectedModalIcon = currentIcon || 'folder';
       document.getElementById('iconSearchInput').value = '';
       renderIconPalette();
       document.getElementById('iconPickerModal').style.display = 'flex';
@@ -1305,9 +1257,10 @@
           class="icon-swatch ${icon === selectedModalIcon ? 'active' : ''}"
           onclick="selectModalIcon('${icon}')"
           title="${icon}">
-          <i class="fas ${resolveThemeIcon(icon)} icon-appearance"></i>
+          ${iconMarkup(icon)}
         </button>
       `).join('');
+      refreshIcons();
     }
 
     function handleIconSearchChange() {
@@ -1321,7 +1274,7 @@
 
     function applyIconFromModal() {
       if (!iconTargetInputId) return;
-      const icon = selectedModalIcon || 'fa-folder';
+      const icon = selectedModalIcon || 'folder';
       document.getElementById(iconTargetInputId).value = icon;
       if (iconTargetInputId === 'catIcon') {
         syncIconPreview('catIcon', 'catIconPreview');
@@ -1365,7 +1318,7 @@
 
     function saveCategory() {
       const name = document.getElementById('catName').value.trim();
-      const icon = document.getElementById('catIcon').value.trim() || 'fa-folder';
+      const icon = document.getElementById('catIcon').value.trim() || 'folder';
       const color = document.getElementById('catColor').value.trim() || '#1e40af';
 
       if (!name) return alert('Informe o nome da categoria.');
@@ -1428,7 +1381,7 @@
       const subtopics = ensureCategorySubtopics(cat);
 
       const title = document.getElementById('subTitle').value.trim();
-      const icon = document.getElementById('subIcon').value.trim() || 'fa-link';
+      const icon = document.getElementById('subIcon').value.trim() || 'link';
       if (!title) return alert('Informe o título da seção.');
 
       if (selectedSubtopicId) {
@@ -1603,6 +1556,7 @@
     window.onload = () => {
       applySavedTheme();
       loadInitialData();
+    refreshIcons();
       const modal = document.getElementById('modal');
       modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
       const colorPickerModal = document.getElementById('colorPickerModal');
