@@ -57,14 +57,14 @@ function saveConfig(configStr) {
     const parsed = JSON.parse(configStr);
     return saveConfigObject(parsed);
   } catch (e) {
-    return { success: false, message: '❌ JSON inválido: ' + e.toString() };
+    return { success: false, message: '❌❌❌ JSON inválido: ' + e.toString() };
   }
 }
 
 function saveConfigObject(configObj) {
   const email = getUserEmail();
   if (!isAdminUser(email)) {
-    return { success: false, message: '❌ Acesso negado. Apenas administradores podem salvar.' };
+    return { success: false, message: '❌❌❌ Acesso negado. Apenas administradores podem salvar.' };
   }
 
   try {
@@ -84,27 +84,27 @@ function saveConfigObject(configObj) {
     if (!auditResult.success) {
       return {
         success: true,
-        message: '✅ Configuração salva com sucesso! ⚠️ Histórico de auditoria reduzido por limite de armazenamento.'
+        message: '✅✅✅ Configuração salva com sucesso! ⚠️⚠️⚠️ Histórico de auditoria reduzido por limite de armazenamento.'
       };
     }
 
-    return { success: true, message: '✅ Configuração salva com sucesso!' };
+    return { success: true, message: '✅✅✅ Configuração salva com sucesso!' };
   } catch (e) {
     const message = String(e && e.message ? e.message : e);
     if (message.toLowerCase().indexOf('quota') !== -1 || message.toLowerCase().indexOf('cota') !== -1) {
       return {
         success: false,
-        message: '❌ Erro ao salvar: limite de armazenamento do Script Properties atingido. Reduza a quantidade/tamanho de itens e tente novamente.'
+        message: '❌❌❌ Erro ao salvar: limite de armazenamento do Script Properties atingido. Reduza a quantidade/tamanho de itens e tente novamente.'
       };
     }
-    return { success: false, message: '❌ Erro ao salvar: ' + message };
+    return { success: false, message: '❌❌❌ Erro ao salvar: ' + message };
   }
 }
 
 function resetToDefault() {
   const email = getUserEmail();
   if (!isAdminUser(email)) {
-    return { success: false, message: '❌ Acesso negado. Apenas administradores podem restaurar.' };
+    return { success: false, message: '❌❌❌ Acesso negado. Apenas administradores podem restaurar.' };
   }
 
   const current = getConfig();
@@ -112,7 +112,7 @@ function resetToDefault() {
   writeJsonToFileProperty(CONFIG_FILE_ID_PROPERTY, CONFIG_FILE_NAME, defaultConfig);
   PropertiesService.getScriptProperties().setProperty(CONFIG_PROPERTY, JSON.stringify(defaultConfig));
   appendAudit('reset', email, current, defaultConfig);
-  return { success: true, message: '✅ Configuração restaurada para o padrão original!' };
+  return { success: true, message: '✅✅✅ Configuração restaurada para o padrão original!' };
 }
 
 function getAuditLog(limit) {
@@ -129,12 +129,12 @@ function getAuditLog(limit) {
 function undoLastChange() {
   const email = getUserEmail();
   if (!isAdminUser(email)) {
-    return { success: false, message: '❌ Acesso negado. Apenas administradores podem desfazer.' };
+    return { success: false, message: '❌❌❌ Acesso negado. Apenas administradores podem desfazer.' };
   }
 
   const logs = getAuditEntries();
   if (!logs.length) {
-    return { success: false, message: '⚠️ Não há alterações para desfazer.' };
+    return { success: false, message: '⚠️⚠️⚠️ Não há alterações para desfazer.' };
   }
 
   const last = logs.shift();
@@ -145,7 +145,7 @@ function undoLastChange() {
 
   return {
     success: true,
-    message: '✅ Última alteração desfeita com sucesso!',
+    message: '✅✅✅ Última alteração desfeita com sucesso!',
   };
 }
 
