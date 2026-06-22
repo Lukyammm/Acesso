@@ -1,4 +1,4 @@
-# Portal NUGESP - Acesso Institucional
+# Institutional Access Governance Portal
 
 Sistema web administrativo em **Google Apps Script + Google Sheets/Properties + Google Drive**, criado para centralizar links, planilhas, formulários, documentos e pastas operacionais em um portal institucional com controle administrativo e trilha de auditoria.
 
